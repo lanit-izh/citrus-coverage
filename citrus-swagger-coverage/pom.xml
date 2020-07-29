@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>citrus-swagger-coverage</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <compiler.version>1.8</compiler.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <allure.version>2.12.1</allure.version>
+        <fork.count>1</fork.count>
+        <lanit.at.framework.version>4.0.11</lanit.at.framework.version>
+        <aspectj.version>1.9.4</aspectj.version>
+        <dependency.locations.enabled>false</dependency.locations.enabled>
+        <javassist.version>3.12.1.GA</javassist.version>
+        <testng.version>6.14.3</testng.version>
+        <citrus.version>2.8.0</citrus.version>
+        <tags/>
+        <camel-version>2.25.0</camel-version>
+        <spring-boot-version>2.1.4.RELEASE</spring-boot-version>
+        <lanit.at.framework.version>4.0.11</lanit.at.framework.version>
+
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.consol.citrus</groupId>
+            <artifactId>citrus-http</artifactId>
+            <version>${citrus.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.consol.citrus/citrus-java-dsl -->
+        <dependency>
+            <groupId>com.consol.citrus</groupId>
+            <artifactId>citrus-java-dsl</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>4.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-cucumber4-jvm</artifactId>
+            <version>2.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java8</artifactId>
+            <scope>test</scope>
+            <version>4.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.26</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.26</version>
+        </dependency>
+        <dependency>
+            <groupId>com.consol.citrus</groupId>
+            <artifactId>citrus-http</artifactId>
+            <version>${citrus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.consol.citrus</groupId>
+            <artifactId>citrus-ws</artifactId>
+            <version>${citrus.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-parser -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-parser</artifactId>
+            <version>2.0.0-rc1</version>
+        </dependency>
+
+    </dependencies>
+    <build>
+        <plugins>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

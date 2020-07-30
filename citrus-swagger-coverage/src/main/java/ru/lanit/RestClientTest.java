@@ -28,4 +28,21 @@ public class RestClientTest extends TestNGCitrusTest {
                     .receive().response(HttpStatus.OK).contentType("application/json; charset=utf-8");
         });
     }
+
+    @Test
+    @Parameters("testRunner")
+    @CitrusTest(name = "test2")
+    public void petStoreTest(@Optional @CitrusResource TestRunner testRunner) {
+        testRunner.http(action -> {
+            action.client("restPetstore")
+                    .send()
+                    .get("petstore/v2/pet/1")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .build();
+        });
+        testRunner.http(action -> {
+            action.client("restPetstore")
+                    .receive().response(HttpStatus.OK).contentType("application/json");
+        });
+    }
 }

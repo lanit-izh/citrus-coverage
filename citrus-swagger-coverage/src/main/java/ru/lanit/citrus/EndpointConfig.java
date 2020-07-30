@@ -21,4 +21,15 @@ public class EndpointConfig {
                 .singletonList(new CitrusHttpInterceptor()));
         return httpClient;
     }
+
+    @Bean(name = "restPetstore")
+    public HttpClient petstoreClient() {
+        HttpClient httpClient = CitrusEndpoints.http()
+                .client()
+                .requestUrl("http://localhost:8080/")
+                .build();
+        httpClient.getEndpointConfiguration().setClientInterceptors(Collections
+                .singletonList(new CitrusHttpInterceptor()));
+        return httpClient;
+    }
 }

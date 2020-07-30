@@ -7,6 +7,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.testng.util.Strings;
 import ru.lanit.utils.CoverageOutputWriter;
 import ru.lanit.utils.FileSystemOutputWriter;
+import ru.lanit.utils.SplitQueryParams;
 import v2.io.swagger.models.Operation;
 import v2.io.swagger.models.Path;
 import v2.io.swagger.models.Response;
@@ -27,7 +28,9 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import static v2.io.swagger.models.Scheme.forValue;
 
-public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
+public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor, SplitQueryParams {
+
+
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
                                         ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
@@ -45,17 +48,17 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
                             LinkedHashMap::new, mapping(Map.Entry::getValue, toList())));
         }
 
-        parameters.forEach((n, v) -> operation.addParameter(new QueryParameter().name(n).example(v.get(0))));
-
+        if (Objects.nonNull(parameters)) {
+            parameters.forEach((n, v) -> operation.addParameter(new QueryParameter().name(n + "="+ v.get(0))));
+        }
 
         ClientHttpResponse clientHttpResponse = clientHttpRequestExecution.execute(httpRequest, bytes);
 
         operation.addResponse(String.valueOf(clientHttpResponse.getStatusCode().value()), new Response());
         if (Objects.nonNull(clientHttpResponse.getBody())) {
-            operation.addParameter(new BodyParameter().name("BODY_PARAM_NAME"));
+            operation.addParameter(new BodyParameter().name("body"));
         }
 
-        clientHttpResponse.getHeaders();
         Swagger swagger = new Swagger()
                 .scheme(forValue(httpRequest.getURI().getScheme()))
                 .host(httpRequest.getURI().getHost())
@@ -63,24 +66,10 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
                 .produces(String.valueOf(clientHttpResponse.getHeaders().getContentType()))
                 .path(httpRequest.getURI().getPath(), new Path().set(httpRequest.getMethod().name().toLowerCase(), operation));
 
-        httpRequest.getMethodValue();
-        CoverageOutputWriter writer = new FileSystemOutputWriter(Paths.get("D:\\swagger"));
+        CoverageOutputWriter writer = new FileSystemOutputWriter(Paths.get("swagger-coverage-output-citrus"));
         writer.write(swagger);
         return clientHttpRequestExecution.execute(httpRequest, bytes);
     }
 
-    public AbstractMap.SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
-        final int idx = it.indexOf("=");
-        final String key = idx > 0 ? it.substring(0, idx) : it;
-        final String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
-        try {
-            return new AbstractMap.SimpleImmutableEntry<>(
-                    URLDecoder.decode(key, "UTF-8"),
-                    URLDecoder.decode(value, "UTF-8")
-            );
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
 }

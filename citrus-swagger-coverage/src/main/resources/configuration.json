@@ -1,0 +1,22 @@
+{
+  "rules" : {
+    "status": {
+      "filter": ["200"]
+    },
+    "only-declared-status" : {
+      "enable" : false
+    },
+    "empty-required-header" : {
+      "enable" : false
+    },
+    "enum-another-value" : {
+      "enable" : false
+    }
+  },
+  "writers": {
+      "html": {
+        "filename": "custom-report.html",
+        "locale": "en"
+      }
+  }
+}

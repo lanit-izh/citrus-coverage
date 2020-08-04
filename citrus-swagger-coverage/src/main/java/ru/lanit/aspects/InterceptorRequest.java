@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class InterceptorRequest {
 
-    @Around("execution(* ru.lanit.aspects.InterceptorRequest.*(..))")
+    @Around("execution(* ru.lanit.aspects.*.*(..))")
     public Object request(ProceedingJoinPoint proceedingJoinPoint) {
 
         long startTime = System.currentTimeMillis();

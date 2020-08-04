@@ -1,6 +1,6 @@
 <aspectj>
     <aspects>
-        <aspect name="ru.lanit.RespectAspect"></aspect>
+        <aspect name="ru.lanit.aspects.RespectAspect"></aspect>
 
     </aspects>
     <weaver options="-Xset:weaveJavaxPackages=true">

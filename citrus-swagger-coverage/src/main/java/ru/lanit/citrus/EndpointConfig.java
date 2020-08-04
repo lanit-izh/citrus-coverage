@@ -5,6 +5,7 @@ import com.consol.citrus.http.client.HttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.lanit.interceptor.CitrusHttpInterceptor;
+import ru.lanit.interceptor.OldLoginInterceptor;
 
 import java.util.Collections;
 

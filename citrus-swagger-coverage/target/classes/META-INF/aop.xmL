@@ -1,0 +1,13 @@
+<aspectj>
+    <aspects>
+        <aspect name="ru.lanit.DevkOnlineLogAspect"></aspect>
+        <aspect name="ru.lanit.aspects.InterceptorRequest"></aspect>
+
+    </aspects>
+    <weaver options="-Xset:weaveJavaxPackages=true">
+        <include within="ru.lanit.*" />
+        <include within="ru.lanit.*.*" />
+
+    </weaver>
+
+</aspectj>

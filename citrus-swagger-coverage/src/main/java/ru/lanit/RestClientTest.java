@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import ru.lanit.aspects.DevkOnlineLog;
+import ru.lanit.aspects.RequestInterceptor;
 import ru.lanit.citrus.Mesaga;
 
 import java.util.HashMap;
@@ -58,11 +58,9 @@ public class RestClientTest extends TestNGCitrusTest {
     @Parameters("testRunner")
     @CitrusTest(name = "test3")
     public void petStorePathParamTest(@Optional @CitrusResource TestRunner testRunner) {
-        show();
         Mesaga mesaga = new Mesaga();
         Map<String, Object> map = new HashMap<>();
         Map<String, String> pathParam = new HashMap<>();
-
         map.put("Petid", "{petId}");
         map.put("fdsfds", "{weer}");
         map.put("Pe2323tid", "{3333}");
@@ -90,7 +88,7 @@ public class RestClientTest extends TestNGCitrusTest {
 
     }
 
-    @DevkOnlineLog
+    @RequestInterceptor
     public void show(){
 
     }

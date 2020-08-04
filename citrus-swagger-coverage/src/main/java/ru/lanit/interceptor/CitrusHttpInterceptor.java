@@ -1,12 +1,11 @@
 package ru.lanit.interceptor;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.testng.util.Strings;
-import ru.lanit.aspects.DevkOnlineLog;
+import ru.lanit.aspects.RequestInterceptor;
 import ru.lanit.utils.CoverageOutputWriter;
 import ru.lanit.utils.FileSystemOutputWriter;
 import ru.lanit.utils.SplitQueryParams;
@@ -30,8 +29,8 @@ import static v2.io.swagger.models.Scheme.forValue;
 
 public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor, SplitQueryParams {
 
-
-    @DevkOnlineLog
+    @RequestInterceptor
+    @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
                                         ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
         Map<String, List<String>> parameters = null;

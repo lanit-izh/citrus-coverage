@@ -5,9 +5,9 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.testng.util.Strings;
-import ru.lanit.aspects.RequestInterceptor;
 import ru.lanit.utils.CoverageOutputWriter;
 import ru.lanit.utils.FileSystemOutputWriter;
+import ru.lanit.utils.InterceptorHandler;
 import ru.lanit.utils.SplitQueryParams;
 import v2.io.swagger.models.Operation;
 import v2.io.swagger.models.Path;
@@ -29,17 +29,13 @@ import static v2.io.swagger.models.Scheme.forValue;
 
 public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor, SplitQueryParams {
 
-    @RequestInterceptor
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
                                         ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
         Map<String, List<String>> parameters = null;
-        String a = new String(bytes);
-        httpRequest.getURI().toURL().getFile();
-        httpRequest.getHeaders().entrySet();
-        httpRequest.getURI().toURL().getQuery();
+        InterceptorHandler interceptorHandler = new InterceptorHandler();
+        interceptorHandler.changePathParam(httpRequest.getURI().getPath(),httpRequest.getHeaders());
         Operation operation = new Operation();
-       new String(bytes);
         operation.addParameter(new PathParameter().name(httpRequest.getURI().getPath()));
         operation.addParameter(new HeaderParameter().name("Content-Type").example(httpRequest.getHeaders().getContentType().toString()));
         operation.addParameter(new PathParameter().name(httpRequest.getURI().getPath()));
@@ -54,7 +50,7 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor, Spli
 
 
         if (Objects.nonNull(parameters)) {
-            parameters.forEach((n, v) -> operation.addParameter(new QueryParameter().name(n + "="+ v.get(0))));
+            parameters.forEach((n, v) -> operation.addParameter(new QueryParameter().name(n + "=" + v.get(0))));
         }
 
         ClientHttpResponse clientHttpResponse = clientHttpRequestExecution.execute(httpRequest, bytes);
@@ -68,7 +64,8 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor, Spli
                 .host(httpRequest.getURI().getHost())
                 .consumes(String.valueOf(httpRequest.getHeaders().getContentType()))
                 .produces(String.valueOf(clientHttpResponse.getHeaders().getContentType()))
-                .path(httpRequest.getURI().getPath()+"{petid}", new Path().set(httpRequest.getMethod().name().toLowerCase(), operation));
+                .path(httpRequest.getURI().getPath() + "{petid}", new Path().set(httpRequest.getMethod().name()
+                        .toLowerCase(), operation));
 
         CoverageOutputWriter writer = new FileSystemOutputWriter(Paths.get("swagger-coverage-output-citrus"));
         writer.write(swagger);

@@ -2,7 +2,6 @@ package ru.lanit;
 
 import com.github.viclovsky.swagger.coverage.SwaggerCoverageRestAssured;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.http.Header;
 import org.testng.annotations.Test;
 
@@ -33,7 +32,7 @@ public class RestAssuredTest {
 //                .response();
 //    }
 
-        public void shouldCatchExceptionRestAssuredIssue1232() {
+    public void shouldCatchExceptionRestAssuredIssue1232() {
         RestAssured.given().filter(new SwaggerCoverageRestAssured())
                 .multiPart("file", "{}")
                 .header(new Header("X-Request-ID", "h"))

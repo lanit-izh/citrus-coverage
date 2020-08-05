@@ -1,4 +1,4 @@
-package ru.lanit.aspects;
+package ru.lanit.annotations;
 
 import java.lang.annotation.*;
 

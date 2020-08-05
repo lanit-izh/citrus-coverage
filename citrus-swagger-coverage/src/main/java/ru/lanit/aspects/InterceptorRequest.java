@@ -9,7 +9,6 @@ public class InterceptorRequest {
 
     @Around("execution(* ru.lanit.aspects.*.*(..))")
     public Object request(ProceedingJoinPoint proceedingJoinPoint) {
-
         long startTime = System.currentTimeMillis();
         System.out.println("Starting " + proceedingJoinPoint.getSignature().getName());
         Object proceed = null;

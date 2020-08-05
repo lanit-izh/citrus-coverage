@@ -59,7 +59,10 @@ public class RestClientTest extends TestNGCitrusTest {
     @CitrusTest(name = "test3")
     public void petStorePathParamTest(@Optional @CitrusResource TestRunner testRunner) throws IOException {
         Map<String, Object> pathParams = new HashMap<>();
-        pathParams.put("id", "1");
+        pathParams.put("{id}", "1");
+        pathParams.put("{v2}", "1");
+
+
         testRunner.http(action -> {
             action.client("httpClient")
                     .send()

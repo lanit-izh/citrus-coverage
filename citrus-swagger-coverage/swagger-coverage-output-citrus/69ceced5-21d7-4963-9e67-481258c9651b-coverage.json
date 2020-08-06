@@ -1,0 +1,46 @@
+{
+  "swagger": "2.0",
+  "host": "localhost",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "text/plain;charset=UTF-8"
+  ],
+  "paths": {
+    "/petstore/v2/object?id=2&name=respect": {
+      "get": {
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "x-example": "application/json"
+          },
+          {
+            "name": "/petstore/v2/object?id=2&name=respect",
+            "in": "path",
+            "required": true
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "x-example": "*/*"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false
+          }
+        ],
+        "responses": {
+          "404": {}
+        }
+      }
+    }
+  }
+}

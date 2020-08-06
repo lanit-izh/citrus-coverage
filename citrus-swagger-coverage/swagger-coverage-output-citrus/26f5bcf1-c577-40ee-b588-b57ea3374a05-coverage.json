@@ -11,7 +11,7 @@
     "text/plain;charset=UTF-8"
   ],
   "paths": {
-    "/petstore/v2/1": {
+    "/petstore/v2/object": {
       "get": {
         "parameters": [
           {
@@ -21,7 +21,7 @@
             "x-example": "application/json"
           },
           {
-            "name": "/petstore/v2/1",
+            "name": "/petstore/v2/object",
             "in": "path",
             "required": true
           },
@@ -29,7 +29,17 @@
             "name": "Accept",
             "in": "header",
             "required": false,
-            "x-example": "[text/plain, application/json, application/*+json, */*]"
+            "x-example": "*/*"
+          },
+          {
+            "name": "query=qwerty",
+            "in": "query",
+            "required": false
+          },
+          {
+            "name": "query1=qwerty2",
+            "in": "query",
+            "required": false
           },
           {
             "in": "body",

@@ -5,11 +5,13 @@ import ru.lanit.interfaces.HttpCitrusSpecHandler;
 
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class InterceptorHandler implements HttpCitrusSpecHandler {
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+
+public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryParams {
 
     @Override
     public Map<String, String> getPathParams(HttpHeaders headers) {
@@ -32,6 +34,7 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
         return uri;
     }
 
+
     @Override
     public String changePathParam(String path, HttpHeaders headers) {
         Map<String, String> parameters = getPathParams(headers);
@@ -46,5 +49,13 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
             }
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public Map<String, List<String>> splitParams(String path) {
+          return Arrays.stream(path.split("&"))
+                .map(this::splitQueryParameter)
+                .collect(Collectors.groupingBy(AbstractMap.SimpleImmutableEntry::getKey,
+                        LinkedHashMap::new, mapping(Map.Entry::getValue, toList())));
     }
 }

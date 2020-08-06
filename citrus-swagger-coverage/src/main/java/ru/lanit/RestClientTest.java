@@ -64,8 +64,9 @@ public class RestClientTest extends TestNGCitrusTest {
         testRunner.http(action -> {
             action.client("httpClient")
                     .send()
-                    .get(URIUtil.encodePath("/petstore/v2/1"))
+                    .get(URIUtil.encodePath("/petstore/v2/object"))
                     .messageType(MessageType.JSON)
+
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .headers(pathParams)
                     .build();

@@ -36,8 +36,8 @@ public class RestAssuredTest {
         RestAssured.given().filter(new SwaggerCoverageRestAssured())
                 .multiPart("file", "{}")
                 .header(new Header("X-Request-ID", "h"))
-                .formParam("form_param", "f", "f2")
-                .queryParam("query_param", "q", "q2")
+                .formParam("form_param", "f", "f2").queryParam("query_param", "q", "q2","q3")
+
                 .pathParam("path_param", "p")
                 .get("/hello/{path_param}");
     }

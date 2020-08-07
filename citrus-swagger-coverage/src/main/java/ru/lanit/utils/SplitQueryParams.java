@@ -3,13 +3,6 @@ package ru.lanit.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
 
 public interface SplitQueryParams {
 

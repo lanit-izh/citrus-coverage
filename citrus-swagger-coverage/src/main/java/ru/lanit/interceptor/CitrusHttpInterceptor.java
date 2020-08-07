@@ -28,7 +28,7 @@ import java.util.Objects;
 
 import static v2.io.swagger.models.Scheme.forValue;
 
-public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor, SplitQueryParams {
+public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,

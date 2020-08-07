@@ -2,6 +2,7 @@ package ru.lanit.utils;
 
 import org.springframework.http.HttpHeaders;
 import ru.lanit.interfaces.HttpCitrusSpecHandler;
+import ru.lanit.interfaces.SplitQueryParams;
 
 import java.lang.reflect.Field;
 import java.net.URI;
@@ -23,17 +24,16 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
     public URI setUriPath(URI uri, String path) {
         try {
             Field pathField = uri.getClass().getDeclaredField("path");
-            pathField.setAccessible(true);
-            pathField.set(uri, path);
             Field decodedPathFiled = uri.getClass().getDeclaredField("decodedPath");
+            pathField.setAccessible(true);
             decodedPathFiled.setAccessible(true);
+            pathField.set(uri, path);
             decodedPathFiled.set(uri, path);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return uri;
     }
-
 
     @Override
     public String changePathParam(String path, HttpHeaders headers) {

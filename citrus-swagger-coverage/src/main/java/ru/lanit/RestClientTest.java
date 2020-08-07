@@ -12,8 +12,13 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import ru.lanit.annotations.RequestInterceptor;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RestClientTest extends TestNGCitrusTest {
@@ -57,20 +62,30 @@ public class RestClientTest extends TestNGCitrusTest {
     @Test
     @Parameters("testRunner")
     @CitrusTest(name = "test3")
-    public void petStorePathParamTest(@Optional @CitrusResource TestRunner testRunner) throws IOException {
+    public void petStorePathParamTest(@Optional @CitrusResource TestRunner testRunner) throws IOException, ScriptException {
         Map<String, Object> pathParams = new HashMap<>();
-       // pathParams.put("{id}", "1");
+        List<String> list = new ArrayList<>();
+        list.add("hello");
+        list.add("Hello header xxx");
+        list.add("Hello header xxx");
+        Map<String, Object> header = new HashMap<>();
+        header.put("HeaderHello", list);
+        pathParams.put("{id1}", "1");
+        pathParams.put("{id2}", "eerrt");
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("javascript");
 
         testRunner.http(action -> {
             action.client("httpClient")
                     .send()
-                    .get(URIUtil.encodePath("/petstore/v2/object?id=5"))
+                    .get(URIUtil.encodePath("/petstore/v2/"))
                     .messageType(MessageType.JSON)
+                    .header("X-Request-ID", "h")
+                    .headers(header)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .headers(pathParams)
+                    //  .headers(pathParams)
                     .build();
         });
-
     }
 
     @RequestInterceptor

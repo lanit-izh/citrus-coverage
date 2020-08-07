@@ -1,4 +1,4 @@
-package ru.lanit.utils;
+package ru.lanit.interfaces;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

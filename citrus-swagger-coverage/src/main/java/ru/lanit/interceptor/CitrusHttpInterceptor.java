@@ -6,10 +6,9 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.testng.util.Strings;
-import ru.lanit.utils.CoverageOutputWriter;
+import ru.lanit.interfaces.CoverageOutputWriter;
 import ru.lanit.utils.FileSystemOutputWriter;
 import ru.lanit.utils.InterceptorHandler;
-import ru.lanit.utils.SplitQueryParams;
 import v2.io.swagger.models.Operation;
 import v2.io.swagger.models.Path;
 import v2.io.swagger.models.Response;
@@ -22,9 +21,11 @@ import v2.io.swagger.models.parameters.QueryParameter;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static v2.io.swagger.models.Scheme.forValue;
 
@@ -46,20 +47,20 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
             changedPath = interceptorHandler.changePathParam(uri.getPath(), httpRequest.getHeaders());
             interceptorHandler.setUriPath(uri, changedPath);
         }
-        pathParameters.entrySet().stream().forEach(x -> operation.addParameter(new PathParameter().name(x.getKey())
-                .example(x.getValue())));
 
-        operation.addParameter(new HeaderParameter().name("Content-Type").example(httpRequest.getHeaders()
-                .getContentType().toString()));
+        pathParameters.entrySet().stream().forEach(x -> operation.addParameter(new PathParameter().name(x.getKey()
+                .replaceAll("[\\[\\]]", "")).example(x.getValue())));
 
-        operation.addParameter(new PathParameter().name(uri.getPath()));
-
-        if (httpRequest.getHeaders().getAccept().contains(MediaType.ALL)) {
-            operation.addParameter(new HeaderParameter().name("Accept").example(MediaType.ALL_VALUE));
-        } else {
-            operation.addParameter(new HeaderParameter().name("Accept").example(httpRequest.getHeaders().getAccept()
-                    .get(0).toString()));
-        }
+        httpRequest.getHeaders().entrySet().stream().filter((h -> !(h.getKey().startsWith("{") && h.getKey()
+                .endsWith("}")))).forEach((x) -> {
+            if (x.getKey().equals("Accept") && Arrays.stream(x.getValue().get(0).split(",")).map(z -> z.trim())
+                    .collect(Collectors.toList()).contains(MediaType.ALL_VALUE)) {
+                operation.addParameter(new HeaderParameter().name("Accept").example(MediaType.ALL_VALUE));
+            } else {
+                operation.addParameter(new HeaderParameter().name(x.getKey()).example(x.getValue().toString()
+                        .replaceAll("[\\[\\]]", "")));
+            }
+        });
 
         if (Strings.isNotNullAndNotEmpty(uri.getQuery())) {
             queryParameters = interceptorHandler.splitParams(beforeChangingPath);

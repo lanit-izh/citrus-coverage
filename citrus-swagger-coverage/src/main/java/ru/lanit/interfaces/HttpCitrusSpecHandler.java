@@ -1,7 +1,6 @@
 package ru.lanit.interfaces;
 
 import org.springframework.http.HttpHeaders;
-import ru.lanit.utils.SplitQueryParams;
 
 import java.net.URI;
 import java.util.List;

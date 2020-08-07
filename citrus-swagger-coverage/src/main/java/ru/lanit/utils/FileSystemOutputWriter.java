@@ -1,6 +1,7 @@
 package ru.lanit.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.lanit.interfaces.CoverageOutputWriter;
 import v2.io.swagger.models.Swagger;
 
 import java.io.IOException;

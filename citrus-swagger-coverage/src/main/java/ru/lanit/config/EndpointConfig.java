@@ -1,4 +1,4 @@
-package ru.lanit.citrus;
+package ru.lanit.config;
 
 import com.consol.citrus.dsl.endpoint.CitrusEndpoints;
 import com.consol.citrus.http.client.HttpClient;

@@ -4,14 +4,18 @@ import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
 import com.consol.citrus.dsl.runner.TestRunner;
 import com.consol.citrus.dsl.testng.TestNGCitrusTest;
+import com.consol.citrus.http.message.HttpMessage;
 import com.consol.citrus.message.MessageType;
 import org.eclipse.jetty.util.URIUtil;
 import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import ru.lanit.annotations.RequestInterceptor;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,14 +63,16 @@ public class RestClientTest extends TestNGCitrusTest {
     @CitrusTest(name = "test3")
     public void petStorePathParamTest(@Optional @CitrusResource TestRunner testRunner) throws IOException {
         Map<String, Object> pathParams = new HashMap<>();
-       // pathParams.put("{id}", "1");
+        MultiValueMap<String, Object> multiPartParams = new LinkedMultiValueMap<>();
+        multiPartParams.add("superFile1", "fsgsdfg");
+        multiPartParams.add("super221", "6546454");
 
         testRunner.http(action -> {
             action.client("httpClient")
                     .send()
-                    .get(URIUtil.encodePath("/petstore/v2/object?id=5"))
-                    .messageType(MessageType.JSON)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .post(URIUtil.encodePath("/petstore/v2/object?id=5"))
+                    .message(new HttpMessage(multiPartParams))
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                     .headers(pathParams)
                     .build();
         });

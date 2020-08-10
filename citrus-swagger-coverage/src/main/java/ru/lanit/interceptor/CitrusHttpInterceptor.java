@@ -5,16 +5,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.testng.util.Strings;
 import ru.lanit.utils.CoverageOutputWriter;
 import ru.lanit.utils.FileSystemOutputWriter;
 import ru.lanit.utils.InterceptorHandler;
-import ru.lanit.utils.SplitQueryParams;
 import v2.io.swagger.models.Operation;
 import v2.io.swagger.models.Path;
 import v2.io.swagger.models.Response;
 import v2.io.swagger.models.Swagger;
 import v2.io.swagger.models.parameters.BodyParameter;
+import v2.io.swagger.models.parameters.FormParameter;
 import v2.io.swagger.models.parameters.HeaderParameter;
 import v2.io.swagger.models.parameters.PathParameter;
 import v2.io.swagger.models.parameters.QueryParameter;
@@ -22,7 +21,6 @@ import v2.io.swagger.models.parameters.QueryParameter;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,7 +31,6 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
                                         ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
-        Map<String, List<String>> queryParameters = null;
         URI uri = httpRequest.getURI();
         InterceptorHandler interceptorHandler = new InterceptorHandler();
         String beforeChangingPath = uri.getPath();
@@ -60,13 +57,12 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
             operation.addParameter(new HeaderParameter().name("Accept").example(httpRequest.getHeaders().getAccept()
                     .get(0).toString()));
         }
-
-        if (Strings.isNotNullAndNotEmpty(uri.getQuery())) {
-            queryParameters = interceptorHandler.splitParams(beforeChangingPath);
+        interceptorHandler.getQueryParams(uri).forEach((n, v) -> operation.addParameter(new QueryParameter().name(n + "=" + v)));
+        if (httpRequest.getHeaders().getContentType().getSubtype().equalsIgnoreCase("x-www-form-urlencoded")) {
+            interceptorHandler.getFormParams(bytes).forEach((n, v) -> operation.addParameter(new FormParameter().name(n).example(v)));
         }
-
-        if (Objects.nonNull(queryParameters)) {
-            queryParameters.forEach((n, v) -> operation.addParameter(new QueryParameter().name(n + "=" + v.get(0))));
+        if (httpRequest.getHeaders().getContentType().getType().equalsIgnoreCase("multipart")) {
+            interceptorHandler.getMultiPartParamsNames(bytes).forEach(multiPartName -> operation.addParameter(new FormParameter().name(multiPartName)));
         }
 
         ClientHttpResponse clientHttpResponse = clientHttpRequestExecution.execute(httpRequest, bytes);

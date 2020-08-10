@@ -1,17 +1,19 @@
 package ru.lanit.utils;
 
 import org.springframework.http.HttpHeaders;
+import org.testng.util.Strings;
 import ru.lanit.interfaces.HttpCitrusSpecHandler;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
-public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryParams {
+public class InterceptorHandler implements HttpCitrusSpecHandler {
 
     @Override
     public Map<String, String> getPathParams(HttpHeaders headers) {
@@ -39,7 +41,7 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
     public String changePathParam(String path, HttpHeaders headers) {
         Map<String, String> parameters = getPathParams(headers);
         StringBuilder stringBuilder = new StringBuilder();
-        String splitPath[] = path.replaceFirst("/", "").trim().split("/");
+        String[] splitPath = path.replaceFirst("/", "").trim().split("/");
 
         for (String value : splitPath) {
             if (Objects.nonNull(parameters.get(value))) {
@@ -51,11 +53,54 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
         return stringBuilder.toString();
     }
 
-    @Override
-    public Map<String, List<String>> splitParams(String path) {
-          return Arrays.stream(path.split("&"))
-                .map(this::splitQueryParameter)
-                .collect(Collectors.groupingBy(AbstractMap.SimpleImmutableEntry::getKey,
-                        LinkedHashMap::new, mapping(Map.Entry::getValue, toList())));
+    public Map<String, String> getQueryParams(URI uri) throws UnsupportedEncodingException {
+        String[] buf;
+        Map<String, String> res = new HashMap<>();
+        if (Strings.isNotNullAndNotEmpty(uri.getQuery())) {
+            for (String couple : uri.getQuery().split("&")) {
+                buf = couple.split("=");
+                res.put(URLDecoder.decode(buf[0], "UTF-8"),
+                        buf.length > 1 ? URLDecoder.decode(buf[1], "UTF-8") : "");
+            }
+        }
+
+        buf = uri.getPath().split("\\?");
+        if (buf.length > 1 && buf[1].length() > 0) {
+            for (String couple : buf[1].split("&")) {
+                buf = couple.split("=");
+                res.put(URLDecoder.decode(buf[0], "UTF-8"),
+                        buf.length > 1 ? URLDecoder.decode(buf[1], "UTF-8") : "");
+            }
+        }
+
+        return res;
     }
+
+    public Map<String, String> getFormParams(byte[] body) {
+        String[] buf;
+        Map<String, String> res = new HashMap<>();
+        if (body.length == 0) {
+            return res;
+        }
+        String formParams = new String(body);
+        for (String couple : formParams.split("&")) {
+            buf = couple.split("=");
+            res.put(buf[0], buf[1]);
+        }
+        return res;
+    }
+
+    public Collection<String> getMultiPartParamsNames(byte[] body) {
+        Set<String> res = new HashSet<>();
+        if (body.length == 0) {
+            return res;
+        }
+        Pattern pattern = Pattern.compile("name=\"(?<paramName>.*?)\"");
+        Matcher matcher = pattern.matcher(new String(body));
+        while (matcher.find()){
+            res.add(matcher.group("paramName"));
+        }
+        return res;
+    }
+
 }

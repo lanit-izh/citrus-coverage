@@ -1,0 +1,53 @@
+{
+  "swagger": "2.0",
+  "host": "localhost",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json;charset=UTF-8"
+  ],
+  "produces": [
+    "text/plain;charset=UTF-8"
+  ],
+  "paths": {
+    "/petstore/v2/pet/{petId}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "{petId}",
+            "in": "path",
+            "required": true,
+            "x-example": "1"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "x-example": "*/*"
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "x-example": "application/json;charset=UTF-8"
+          },
+          {
+            "name": "Content-Length",
+            "in": "header",
+            "required": false,
+            "x-example": "0"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false
+          }
+        ],
+        "responses": {
+          "404": {}
+        }
+      }
+    }
+  }
+}

@@ -65,27 +65,18 @@ public class RestClientTest extends TestNGCitrusTest {
     public void petStorePathParamTest(@Optional @CitrusResource TestRunner testRunner) throws IOException, ScriptException {
         Map<String, Object> pathParams = new HashMap<>();
         List<String> list = new ArrayList<>();
-        list.add("hello");
-        list.add("Hello header xxx");
-        list.add("Hello header xxx");
         Map<String, Object> header = new HashMap<>();
-        header.put("HeaderHello", list);
-        pathParams.put("{id1}", "1");
-        pathParams.put("{id2}", "eerrt");
         ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("javascript");
-
         testRunner.http(action -> {
             action.client("httpClient")
+
                     .send()
-                    .get(URIUtil.encodePath("/petstore/v2/"))
+                    .get(URIUtil.encodePath("pet/{petId}"))
+
                     .messageType(MessageType.JSON)
-                    .header("X-Request-ID", "h")
-                    .headers(header)
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    //  .headers(pathParams)
+                    .headers(pathParams)
                     .build();
-        });
+        }).;
     }
 
     @RequestInterceptor

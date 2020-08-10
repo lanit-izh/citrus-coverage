@@ -58,4 +58,8 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
                 .collect(Collectors.groupingBy(AbstractMap.SimpleImmutableEntry::getKey,
                         LinkedHashMap::new, mapping(Map.Entry::getValue, toList())));
     }
+
+    public Map<String, List<String>> processingHeaders(HttpHeaders headers) {
+        return null;
+    }
 }

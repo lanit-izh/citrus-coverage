@@ -1,5 +1,6 @@
 package ru.lanit.interceptor;
 
+import com.consol.citrus.http.model.FormData;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -34,6 +35,8 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
                                         ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
+        httpRequest.getURI().toURL().openConnection().toString();
+        httpRequest.getURI().getPath();
         Map<String, List<String>> queryParameters = null;
         URI uri = httpRequest.getURI();
         InterceptorHandler interceptorHandler = new InterceptorHandler();
@@ -46,7 +49,7 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
             pathParameters = interceptorHandler.getPathParams(httpRequest.getHeaders());
             changedPath = interceptorHandler.changePathParam(uri.getPath(), httpRequest.getHeaders());
             interceptorHandler.setUriPath(uri, changedPath);
-        }
+        } ;
 
         pathParameters.entrySet().stream().forEach(x -> operation.addParameter(new PathParameter().name(x.getKey()
                 .replaceAll("[\\[\\]]", "")).example(x.getValue())));
@@ -62,9 +65,7 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
             }
         });
 
-        if (Strings.isNotNullAndNotEmpty(uri.getQuery())) {
-            queryParameters = interceptorHandler.splitParams(beforeChangingPath);
-        }
+        //    queryParameters = interceptorHandler.splitParams(beforeChangingPath);
 
         if (Objects.nonNull(queryParameters)) {
             queryParameters.forEach((n, v) -> operation.addParameter(new QueryParameter().name(n + "=" + v.get(0))));

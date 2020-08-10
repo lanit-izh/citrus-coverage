@@ -1,11 +1,17 @@
 package ru.lanit.interceptor;
 
+import com.consol.citrus.http.model.FormData;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+<<<<<<< HEAD
+import org.testng.util.Strings;
+import ru.lanit.interfaces.CoverageOutputWriter;
+=======
 import ru.lanit.utils.CoverageOutputWriter;
+>>>>>>> WWQP
 import ru.lanit.utils.FileSystemOutputWriter;
 import ru.lanit.utils.InterceptorHandler;
 import v2.io.swagger.models.Operation;
@@ -21,8 +27,14 @@ import v2.io.swagger.models.parameters.QueryParameter;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Paths;
+<<<<<<< HEAD
+import java.util.Arrays;
+import java.util.List;
+=======
+>>>>>>> WWQP
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static v2.io.swagger.models.Scheme.forValue;
 
@@ -31,6 +43,12 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
                                         ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
+<<<<<<< HEAD
+        httpRequest.getURI().toURL().openConnection().toString();
+        httpRequest.getURI().getPath();
+        Map<String, List<String>> queryParameters = null;
+=======
+>>>>>>> WWQP
         URI uri = httpRequest.getURI();
         InterceptorHandler interceptorHandler = new InterceptorHandler();
         String beforeChangingPath = uri.getPath();
@@ -42,15 +60,28 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
             pathParameters = interceptorHandler.getPathParams(httpRequest.getHeaders());
             changedPath = interceptorHandler.changePathParam(uri.getPath(), httpRequest.getHeaders());
             interceptorHandler.setUriPath(uri, changedPath);
-        }
-        pathParameters.entrySet().stream().forEach(x -> operation.addParameter(new PathParameter().name(x.getKey())
-                .example(x.getValue())));
+        } ;
 
-        operation.addParameter(new HeaderParameter().name("Content-Type").example(httpRequest.getHeaders()
-                .getContentType().toString()));
+        pathParameters.entrySet().stream().forEach(x -> operation.addParameter(new PathParameter().name(x.getKey()
+                .replaceAll("[\\[\\]]", "")).example(x.getValue())));
 
-        operation.addParameter(new PathParameter().name(uri.getPath()));
+<<<<<<< HEAD
+        httpRequest.getHeaders().entrySet().stream().filter((h -> !(h.getKey().startsWith("{") && h.getKey()
+                .endsWith("}")))).forEach((x) -> {
+            if (x.getKey().equals("Accept") && Arrays.stream(x.getValue().get(0).split(",")).map(z -> z.trim())
+                    .collect(Collectors.toList()).contains(MediaType.ALL_VALUE)) {
+                operation.addParameter(new HeaderParameter().name("Accept").example(MediaType.ALL_VALUE));
+            } else {
+                operation.addParameter(new HeaderParameter().name(x.getKey()).example(x.getValue().toString()
+                        .replaceAll("[\\[\\]]", "")));
+            }
+        });
 
+        //    queryParameters = interceptorHandler.splitParams(beforeChangingPath);
+
+        if (Objects.nonNull(queryParameters)) {
+            queryParameters.forEach((n, v) -> operation.addParameter(new QueryParameter().name(n + "=" + v.get(0))));
+=======
         if (httpRequest.getHeaders().getAccept().contains(MediaType.ALL)) {
             operation.addParameter(new HeaderParameter().name("Accept").example(MediaType.ALL_VALUE));
         } else {
@@ -63,6 +94,7 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
         }
         if (httpRequest.getHeaders().getContentType().getType().equalsIgnoreCase("multipart")) {
             interceptorHandler.getMultiPartParamsNames(bytes).forEach(multiPartName -> operation.addParameter(new FormParameter().name(multiPartName)));
+>>>>>>> WWQP
         }
 
         ClientHttpResponse clientHttpResponse = clientHttpRequestExecution.execute(httpRequest, bytes);

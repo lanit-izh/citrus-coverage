@@ -5,7 +5,7 @@
     "http"
   ],
   "consumes": [
-    "multipart/form-data; boundary=\"gnb8dsGQdyabg77apqJWtK3fC5AkZk\""
+    "multipart/form-data; boundary=\"HYyYUmb_4nd3iR1tedeXgJSnZ5iA1G3\""
   ],
   "produces": [
     "application/json;charset=UTF-8"

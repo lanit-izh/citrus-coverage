@@ -1,4 +1,4 @@
-package ru.lanit.utils;
+package ru.lanit.interfaces;
 
 import v2.io.swagger.models.Swagger;
 

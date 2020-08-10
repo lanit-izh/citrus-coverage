@@ -15,7 +15,7 @@
         <!--        <citrus:variable name="Var" value=" Hello world"/>-->
     </citrus:global-variables>
     <citrus-http:client id="httpClient"
-                        request-url="http://localhost:8080/"
+                        request-url="http://localhost:8080/petstore/v2/"
                         content-type="application/json"
                         interceptors="interceptor"/>
 

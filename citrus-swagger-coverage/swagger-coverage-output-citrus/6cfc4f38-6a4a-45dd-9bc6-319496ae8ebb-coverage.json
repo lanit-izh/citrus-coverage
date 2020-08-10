@@ -5,25 +5,20 @@
     "http"
   ],
   "consumes": [
-    "application/json"
+    "application/json;charset=UTF-8"
   ],
   "produces": [
     "text/plain;charset=UTF-8"
   ],
   "paths": {
-    "/petstore/v2/object": {
+    "/petstore/v2/pet/{petId}": {
       "get": {
         "parameters": [
           {
-            "name": "Content-Type",
-            "in": "header",
-            "required": false,
-            "x-example": "application/json"
-          },
-          {
-            "name": "/petstore/v2/object",
+            "name": "{petId}",
             "in": "path",
-            "required": true
+            "required": true,
+            "x-example": "1"
           },
           {
             "name": "Accept",
@@ -32,14 +27,16 @@
             "x-example": "*/*"
           },
           {
-            "name": "query=qwerty",
-            "in": "query",
-            "required": false
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "x-example": "application/json;charset=UTF-8"
           },
           {
-            "name": "query1=qwerty2",
-            "in": "query",
-            "required": false
+            "name": "Content-Length",
+            "in": "header",
+            "required": false,
+            "x-example": "0"
           },
           {
             "in": "body",

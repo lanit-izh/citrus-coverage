@@ -3,6 +3,7 @@ package ru.lanit.utils;
 import org.springframework.http.HttpHeaders;
 import org.testng.util.Strings;
 import ru.lanit.interfaces.HttpCitrusSpecHandler;
+import ru.lanit.interfaces.SplitQueryParams;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -25,17 +26,16 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
     public URI setUriPath(URI uri, String path) {
         try {
             Field pathField = uri.getClass().getDeclaredField("path");
-            pathField.setAccessible(true);
-            pathField.set(uri, path);
             Field decodedPathFiled = uri.getClass().getDeclaredField("decodedPath");
+            pathField.setAccessible(true);
             decodedPathFiled.setAccessible(true);
+            pathField.set(uri, path);
             decodedPathFiled.set(uri, path);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return uri;
     }
-
 
     @Override
     public String changePathParam(String path, HttpHeaders headers) {
@@ -76,6 +76,11 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
         return res;
     }
 
+<<<<<<< HEAD
+    public Map<String, List<String>> processingHeaders(HttpHeaders headers) {
+        return null;
+    }
+=======
     public Map<String, String> getFormParams(byte[] body) {
         String[] buf;
         Map<String, String> res = new HashMap<>();
@@ -103,4 +108,5 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
         return res;
     }
 
+>>>>>>> WWQP
 }

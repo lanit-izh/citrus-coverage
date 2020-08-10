@@ -1,9 +1,11 @@
 package ru.lanit.utils;
 
+import org.eclipse.jetty.util.URIUtil;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.testng.util.Strings;
 import ru.lanit.interfaces.HttpCitrusSpecHandler;
-import ru.lanit.interfaces.SplitQueryParams;
+import v2.io.swagger.models.parameters.HeaderParameter;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -15,6 +17,31 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class InterceptorHandler implements HttpCitrusSpecHandler {
+
+    public static String userPath;
+
+    public static String getUserPath(String path) {
+        userPath = path;
+        return URIUtil.encodePath(path);
+    }
+
+    public List<HeaderParameter> getHeadersParam(HttpHeaders headers) {
+        List<HeaderParameter> headerParameters = new ArrayList<>();
+        headers.getAccept();
+        HeaderParameter headerParameter = new HeaderParameter();
+        headers.entrySet().stream().filter((h -> !(h.getKey().startsWith("{") && h.getKey()
+                .endsWith("}")))).forEach((x) -> {
+            if (x.getKey().equals("Accept") && Arrays.stream(x.getValue().get(0).split(",")).map(z -> z.trim())
+                    .collect(Collectors.toList()).contains(MediaType.ALL_VALUE)) {
+                headerParameters.add( new HeaderParameter().name("Accept").example(MediaType.ALL_VALUE));
+            } else if (!(x.getKey().equals("Content-Length"))&&!(x.getKey().equals("multipart"))
+                    &&!(x.getKey().equals("x-www-form-urlencoded"))) {
+                headerParameters.add(new HeaderParameter().name(x.getKey()).example(x.getValue().toString()
+                        .replaceAll("[\\[\\]]", "")));
+            }
+        });
+        return headerParameters;
+    }
 
     @Override
     public Map<String, String> getPathParams(HttpHeaders headers) {
@@ -76,11 +103,6 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
         return res;
     }
 
-<<<<<<< HEAD
-    public Map<String, List<String>> processingHeaders(HttpHeaders headers) {
-        return null;
-    }
-=======
     public Map<String, String> getFormParams(byte[] body) {
         String[] buf;
         Map<String, String> res = new HashMap<>();
@@ -102,11 +124,13 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
         }
         Pattern pattern = Pattern.compile("name=\"(?<paramName>.*?)\"");
         Matcher matcher = pattern.matcher(new String(body));
-        while (matcher.find()){
+        while (matcher.find()) {
             res.add(matcher.group("paramName"));
         }
         return res;
     }
 
->>>>>>> WWQP
+    public Map<String, List<String>> processingHeaders(HttpHeaders headers) {
+        return null;
+    }
 }

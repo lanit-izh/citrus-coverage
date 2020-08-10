@@ -10,18 +10,15 @@ import org.eclipse.jetty.util.URIUtil;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.HttpRequestHandler;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import ru.lanit.annotations.RequestInterceptor;
+import ru.lanit.utils.InterceptorHandler;
 
-<<<<<<< HEAD
-import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-=======
-import java.io.File;
->>>>>>> WWQP
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,34 +68,42 @@ public class RestClientTest extends TestNGCitrusTest {
     @CitrusTest(name = "test3")
     public void petStorePathParamTest(@Optional @CitrusResource TestRunner testRunner) throws IOException, ScriptException {
         Map<String, Object> pathParams = new HashMap<>();
-<<<<<<< HEAD
         List<String> list = new ArrayList<>();
         Map<String, Object> header = new HashMap<>();
         ScriptEngineManager manager = new ScriptEngineManager();
-=======
         MultiValueMap<String, Object> multiPartParams = new LinkedMultiValueMap<>();
-        multiPartParams.add("superFile1", "fsgsdfg");
-        multiPartParams.add("super221", "6546454");
+        pathParams.put("{petId}", "3");
+        pathParams.put("{pet}", "3");
+        pathParams.put("{qqq}", "3");
 
->>>>>>> WWQP
+
         testRunner.http(action -> {
             action.client("httpClient")
 
                     .send()
-<<<<<<< HEAD
-                    .get(URIUtil.encodePath("pet/{petId}"))
-
-                    .messageType(MessageType.JSON)
-=======
-                    .post(URIUtil.encodePath("/petstore/v2/object?id=5"))
-                    .message(new HttpMessage(multiPartParams))
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
->>>>>>> WWQP
+                    .get(InterceptorHandler.getUserPath("pet/{petId}/{pet}/{qqq}"))
                     .headers(pathParams)
+                    .messageType(MessageType.JSON)
                     .build();
         });
     }
-
+//        testRunner.http(action -> {
+//        action.client("httpClient")
+//
+//                .send()
+//                .get(URIUtil.encodePath("pet/{petId}"))
+//
+//                .messageType(MessageType.JSON)
+//
+//                .post(URIUtil.encodePath("/petstore/v2/object?id=5"))
+//                .message(new HttpMessage(multiPartParams))
+//                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//                .get(URIUtil.encodePath("pet/{petId}"))
+//
+//                .messageType(MessageType.JSON)
+//                .headers(pathParams)
+//                .build();
+//    });
     @RequestInterceptor
     public void show() {
     }

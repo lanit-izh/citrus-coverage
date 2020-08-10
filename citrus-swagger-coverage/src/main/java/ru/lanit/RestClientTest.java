@@ -76,7 +76,7 @@ public class RestClientTest extends TestNGCitrusTest {
                     .messageType(MessageType.JSON)
                     .headers(pathParams)
                     .build();
-        }).;
+        });
     }
 
     @RequestInterceptor

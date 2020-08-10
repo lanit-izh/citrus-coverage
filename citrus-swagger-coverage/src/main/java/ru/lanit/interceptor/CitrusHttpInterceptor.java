@@ -15,7 +15,6 @@ import v2.io.swagger.models.parameters.BodyParameter;
 import v2.io.swagger.models.parameters.FormParameter;
 import v2.io.swagger.models.parameters.PathParameter;
 import v2.io.swagger.models.parameters.QueryParameter;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,12 +32,10 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
                                         ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
-
         httpRequest.getURI();
         Map<String, List<String>> queryParameters = null;
         URI uri = httpRequest.getURI();
         InterceptorHandler interceptorHandler = new InterceptorHandler();
-        String beforeChangingPath = uri.getPath();
         String changedPath = null;
         Map<String, String> pathParameters = null;
         Operation operation = new Operation();
@@ -49,16 +46,15 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
             interceptorHandler.setUriPath(uri, changedPath);
         }
 
+        interceptorHandler.getQueryParams(uri).entrySet().stream().forEach(x->operation
+                .addParameter(new QueryParameter().name(x.getKey())));
         pathParameters.entrySet().stream().forEach(x -> operation.addParameter(new PathParameter().name(x.getKey()
                 .replaceAll("[\\{\\}]", "")).example(x.getValue())));
 
         interceptorHandler.getHeadersParam(httpRequest.getHeaders()).stream().forEach(p -> operation.addParameter(p));
 
-        if (Objects.nonNull(queryParameters)) {
-            queryParameters.forEach((n, v) -> operation.addParameter(new QueryParameter().name(n + "=" + v.get(0))));
-        }
-
-        if (httpRequest.getHeaders().getContentType().getSubtype().equalsIgnoreCase("x-www-form-urlencoded")) {
+        if (httpRequest.getHeaders().getContentType().getSubtype()
+                .equalsIgnoreCase("x-www-form-urlencoded")) {
             interceptorHandler.getFormParams(bytes).forEach((n, v) -> operation
                     .addParameter(new FormParameter().name(n).example(v)));
         }
@@ -68,11 +64,8 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
                     .addParameter(new FormParameter().name(multiPartName)));
         }
 
-        if (Objects.nonNull(queryParameters)) {
-            queryParameters.forEach((n, v) -> operation.addParameter(new QueryParameter().name(n + "=" + v.get(0))));
-        }
-
         ClientHttpResponse clientHttpResponse = clientHttpRequestExecution.execute(httpRequest, bytes);
+        clientHttpResponse.getHeaders();
         operation.addResponse(String.valueOf(clientHttpResponse.getStatusCode().value()), new Response());
 
         BufferedReader br = new BufferedReader(new InputStreamReader(clientHttpResponse.getBody()));

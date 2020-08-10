@@ -5,12 +5,8 @@ import com.consol.citrus.annotations.CitrusTest;
 import com.consol.citrus.dsl.runner.TestRunner;
 import com.consol.citrus.dsl.testng.TestNGCitrusTest;
 import com.consol.citrus.http.message.HttpMessage;
-import com.consol.citrus.message.MessageType;
-import org.eclipse.jetty.util.URIUtil;
-import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.HttpRequestHandler;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -73,21 +69,23 @@ public class RestClientTest extends TestNGCitrusTest {
         ScriptEngineManager manager = new ScriptEngineManager();
         MultiValueMap<String, Object> multiPartParams = new LinkedMultiValueMap<>();
         pathParams.put("{petId}", "3");
-        pathParams.put("{pet}", "3");
-        pathParams.put("{qqq}", "3");
 
-
+        HttpMessage httpMessage = new HttpMessage();
+        httpMessage.getContextPath();
         testRunner.http(action -> {
             action.client("httpClient")
-
                     .send()
-                    .get(InterceptorHandler.getUserPath("pet/{petId}/{pet}/{qqq}"))
+                    .get(InterceptorHandler.getPath("/pet/{petId}"))
+                    .queryParam("queryPparam","123")
+                    .queryParam("query","123")
+                    .queryParam("hello","234")
+
                     .headers(pathParams)
-                    .messageType(MessageType.JSON)
                     .build();
         });
     }
-//        testRunner.http(action -> {
+
+    //        testRunner.http(action -> {
 //        action.client("httpClient")
 //
 //                .send()

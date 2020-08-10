@@ -5,32 +5,36 @@
     "http"
   ],
   "consumes": [
-    "application/json;charset=UTF-8"
+    "multipart/form-data; boundary=\"ZcuflvYiEL0HYDvLQ9dDkzkvWxtmbAJb91kn\""
   ],
   "produces": [
-    "text/plain;charset=UTF-8"
+    "application/json;charset=UTF-8"
   ],
   "paths": {
-    "pet/{petId}/{pet}/{qqq}": {
+    "/hello/{path_param}": {
       "get": {
         "parameters": [
           {
-            "name": "pet",
+            "name": "path_param",
             "in": "path",
             "required": true,
-            "x-example": "3"
+            "x-example": "p"
           },
           {
-            "name": "petId",
-            "in": "path",
-            "required": true,
-            "x-example": "3"
+            "name": "query_param",
+            "in": "query",
+            "required": false
           },
           {
-            "name": "qqq",
-            "in": "path",
-            "required": true,
-            "x-example": "3"
+            "name": "form_param",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "X-Request-ID",
+            "in": "header",
+            "required": false,
+            "x-example": "h"
           },
           {
             "name": "Accept",
@@ -42,11 +46,11 @@
             "name": "Content-Type",
             "in": "header",
             "required": false,
-            "x-example": "application/json;charset=UTF-8"
+            "x-example": "multipart/form-data"
           },
           {
-            "in": "body",
-            "name": "body",
+            "name": "file",
+            "in": "formData",
             "required": false
           }
         ],

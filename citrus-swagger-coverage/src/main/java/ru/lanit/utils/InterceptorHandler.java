@@ -20,9 +20,9 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
 
     public static String userPath;
 
-    public static String getUserPath(String path) {
-        userPath = path;
-        return URIUtil.encodePath(path);
+    public static String getPath(String path) {
+        userPath = path.replace("//","/");
+        return URIUtil.encodePath(userPath);
     }
 
     public List<HeaderParameter> getHeadersParam(HttpHeaders headers) {

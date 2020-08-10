@@ -38,6 +38,8 @@ public class RestAssuredTest {
                 .header(new Header("X-Request-ID", "h"))
                 .formParam("form_param", "f", "f2")
                 .queryParam("query_param", "q", "q2","q3")
+                .queryParam("query_param2", "q", "q2","q3")
+
 
                 .pathParam("path_param", "p")
                 .get("/hello/{path_param}");

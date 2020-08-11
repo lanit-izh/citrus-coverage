@@ -5,6 +5,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.testng.util.Strings;
 import ru.lanit.interfaces.HttpCitrusSpecHandler;
+import ru.lanit.interfaces.SplitQueryParams;
+import v2.io.swagger.models.parameters.FormParameter;
 import v2.io.swagger.models.parameters.HeaderParameter;
 
 import java.io.UnsupportedEncodingException;
@@ -16,15 +18,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class InterceptorHandler implements HttpCitrusSpecHandler {
+public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryParams {
 
     public static String userPath;
 
     public static String getPath(String path) {
-        userPath = path.replace("//","/");
+        userPath = path.replace("//", "/");
         return URIUtil.encodePath(userPath);
     }
 
+    @Override
     public List<HeaderParameter> getHeadersParam(HttpHeaders headers) {
         List<HeaderParameter> headerParameters = new ArrayList<>();
         headers.getAccept();
@@ -33,14 +36,32 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
                 .endsWith("}")))).forEach((x) -> {
             if (x.getKey().equals("Accept") && Arrays.stream(x.getValue().get(0).split(",")).map(z -> z.trim())
                     .collect(Collectors.toList()).contains(MediaType.ALL_VALUE)) {
-                headerParameters.add( new HeaderParameter().name("Accept").example(MediaType.ALL_VALUE));
-            } else if (!(x.getKey().equals("Content-Length"))&&!(x.getKey().equals("multipart"))
-                    &&!(x.getKey().equals("x-www-form-urlencoded"))) {
+                headerParameters.add(new HeaderParameter().name("Accept").example(MediaType.ALL_VALUE));
+            } else if (!(x.getKey().equals("Content-Length")) && !(x.getKey().equals("multipart"))
+                    && !(x.getKey().equals("x-www-form-urlencoded"))) {
                 headerParameters.add(new HeaderParameter().name(x.getKey()).example(x.getValue().toString()
                         .replaceAll("[\\[\\]]", "")));
             }
         });
         return headerParameters;
+    }
+
+    @Override
+    public List<FormParameter> getXWWWFormUrlEncoded(HttpHeaders headers, byte[] bytes) {
+        List<FormParameter> list = new ArrayList<>();
+        if(headers.getContentType().getSubtype().equalsIgnoreCase("x-www-form-urlencoded")){
+            getFormParams(bytes).forEach((n, v) -> list.add(new FormParameter().name(n).example(v)));
+        }
+        return list;
+    }
+
+    @Override
+    public List<FormParameter> getMultiPartParams(HttpHeaders headers, byte[] bytes) {
+        List<FormParameter> list = new ArrayList<>();
+        if(headers.getContentType().getType().equalsIgnoreCase("multipart")){
+            getMultiPartParamsNames(bytes).forEach(n-> list.add(new FormParameter().name(n)));
+        }
+        return list;
     }
 
     @Override
@@ -103,6 +124,7 @@ public class InterceptorHandler implements HttpCitrusSpecHandler {
         return res;
     }
 
+    @Override
     public Map<String, String> getFormParams(byte[] body) {
         String[] buf;
         Map<String, String> res = new HashMap<>();

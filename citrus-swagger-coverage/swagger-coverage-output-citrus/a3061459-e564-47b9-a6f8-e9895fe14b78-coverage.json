@@ -5,7 +5,7 @@
     "http"
   ],
   "consumes": [
-    "application/json;charset=UTF-8"
+    "application/json"
   ],
   "produces": [
     "application/json"
@@ -15,22 +15,7 @@
       "get": {
         "parameters": [
           {
-            "name": "queryPparam",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "hello",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "petId",
+            "name": "{petId}",
             "in": "path",
             "required": true,
             "x-example": "3"
@@ -45,7 +30,7 @@
             "name": "Content-Type",
             "in": "header",
             "required": false,
-            "x-example": "application/json;charset=UTF-8"
+            "x-example": "application/json"
           },
           {
             "in": "body",

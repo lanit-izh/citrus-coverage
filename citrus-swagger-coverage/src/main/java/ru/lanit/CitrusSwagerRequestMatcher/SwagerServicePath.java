@@ -7,9 +7,9 @@ import v2.io.swagger.parser.SwaggerParser;
 
 import java.util.*;
 
-public class  SwagerServicePath {
+public class SwagerServicePath {
     static {
-      //  readSwagerInfo("swagger/petstore-api.json");
+        //  readSwagerInfo("swagger/petstore-api.json");
     }
 
     private static List<SwagerServicePath> swagerServicePaths;
@@ -32,11 +32,13 @@ public class  SwagerServicePath {
 
 
     public static PathUse matchPath(HttpRequest request) {
-        Optional<SwagerServicePath> optionalSwagerServicePath = swagerServicePaths.stream().filter(x -> !x.parametrizeblePath).filter(x -> x.isSuitablePath(request.getURI().getPath())).findAny();
+        Optional<SwagerServicePath> optionalSwagerServicePath = swagerServicePaths.stream()
+                .filter(x -> !x.parametrizeblePath).filter(x -> x.isSuitablePath(request.getURI().getPath())).findAny();
         if (optionalSwagerServicePath.isPresent()) {
             System.out.println("Ура, мы нашли нужный путь в сваггере");
         } else {
-            optionalSwagerServicePath = swagerServicePaths.stream().filter(x -> x.parametrizeblePath).filter(x -> x.isSuitablePath(request.getURI().getPath())).findAny();
+            optionalSwagerServicePath = swagerServicePaths.stream().filter(x -> x.parametrizeblePath)
+                    .filter(x -> x.isSuitablePath(request.getURI().getPath())).findAny();
             if (optionalSwagerServicePath.isPresent()) {
                 System.out.println("Ура, мы нашли параметризуемый путь в свагере");
             } else {
@@ -51,7 +53,8 @@ public class  SwagerServicePath {
         String[] swagerPathElements = servicePath.path.split("/");
         for (int i = 0; i < swagerPathElements.length; i++) {
             if (isPathParametrizeble(swagerPathElements[i])) {
-                res.addParam(swagerPathElements[i].substring(1, swagerPathElements[i].length() - 1),  requestPathElements[i]);
+                res.addParam(swagerPathElements[i].substring(1, swagerPathElements[i].length() - 1),
+                        requestPathElements[i]);
             }
         }
         return res;

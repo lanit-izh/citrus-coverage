@@ -5,7 +5,7 @@
     "http"
   ],
   "consumes": [
-    "application/json;charset=UTF-8"
+    "application/json"
   ],
   "produces": [
     "application/json"
@@ -14,21 +14,6 @@
     "/pet/{petId}": {
       "get": {
         "parameters": [
-          {
-            "name": "queryPparam",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false
-          },
-          {
-            "name": "hello",
-            "in": "query",
-            "required": false
-          },
           {
             "name": "petId",
             "in": "path",
@@ -45,7 +30,7 @@
             "name": "Content-Type",
             "in": "header",
             "required": false,
-            "x-example": "application/json;charset=UTF-8"
+            "x-example": "application/json"
           },
           {
             "in": "body",

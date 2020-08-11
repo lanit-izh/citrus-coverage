@@ -5,6 +5,7 @@ import com.consol.citrus.annotations.CitrusTest;
 import com.consol.citrus.dsl.runner.TestRunner;
 import com.consol.citrus.dsl.testng.TestNGCitrusTest;
 import com.consol.citrus.http.message.HttpMessage;
+import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.testng.annotations.Optional;
@@ -68,6 +69,9 @@ public class RestClientTest extends TestNGCitrusTest {
         Map<String, Object> header = new HashMap<>();
         ScriptEngineManager manager = new ScriptEngineManager();
         MultiValueMap<String, Object> multiPartParams = new LinkedMultiValueMap<>();
+        multiPartParams.add("{petId}", "hello world");
+        multiPartParams.add("petId", "hello world");
+
         pathParams.put("{petId}", "3");
 
         HttpMessage httpMessage = new HttpMessage();
@@ -76,10 +80,7 @@ public class RestClientTest extends TestNGCitrusTest {
             action.client("httpClient")
                     .send()
                     .get(InterceptorHandler.getPath("/pet/{petId}"))
-                    .queryParam("queryPparam","123")
-                    .queryParam("query","123")
-                    .queryParam("hello","234")
-
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .headers(pathParams)
                     .build();
         });

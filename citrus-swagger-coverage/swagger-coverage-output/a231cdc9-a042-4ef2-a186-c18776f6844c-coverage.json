@@ -1,25 +1,19 @@
 {
   "swagger": "2.0",
-  "host": "localhost",
+  "host": "petstore.swagger.io",
   "schemes": [
-    "http"
+    "https"
   ],
   "consumes": [
-    "application/json"
+    "multipart/form-data; boundary=\"hxTQwarCq7oTpMq4Gr5dQOWX-vsv_n68LnUlz\""
   ],
   "produces": [
-    "application/json"
+    "application/xml"
   ],
   "paths": {
-    "/pet/{petId}": {
+    "/v2/pet/1/uploadImage": {
       "get": {
         "parameters": [
-          {
-            "name": "{petId}",
-            "in": "path",
-            "required": true,
-            "x-example": "3"
-          },
           {
             "name": "Accept",
             "in": "header",
@@ -30,16 +24,16 @@
             "name": "Content-Type",
             "in": "header",
             "required": false,
-            "x-example": "application/json"
+            "x-example": "multipart/form-data"
           },
           {
-            "in": "body",
-            "name": "body",
+            "name": "file",
+            "in": "formData",
             "required": false
           }
         ],
         "responses": {
-          "200": {}
+          "405": {}
         }
       }
     }

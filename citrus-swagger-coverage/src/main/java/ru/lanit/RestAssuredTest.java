@@ -44,4 +44,11 @@ public class RestAssuredTest {
                 .pathParam("path_param", "p")
                 .get("/hello/{path_param}");
     }
+
+    public void dd() {
+        RestAssured.given().filter(new SwaggerCoverageRestAssured())
+                .multiPart("file", "{}")
+
+                .post("https://petstore.swagger.io/v2/pet/1/uploadImage");
+    }
 }

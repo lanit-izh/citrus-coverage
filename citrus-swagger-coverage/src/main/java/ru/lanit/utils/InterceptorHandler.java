@@ -12,6 +12,7 @@ import v2.io.swagger.models.parameters.HeaderParameter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -30,8 +31,6 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
     @Override
     public List<HeaderParameter> getHeadersParam(HttpHeaders headers) {
         List<HeaderParameter> headerParameters = new ArrayList<>();
-        headers.getAccept();
-        HeaderParameter headerParameter = new HeaderParameter();
         headers.entrySet().stream().filter((h -> !(h.getKey().startsWith("{") && h.getKey()
                 .endsWith("}")))).forEach((x) -> {
             if (x.getKey().equals("Accept") && Arrays.stream(x.getValue().get(0).split(",")).map(z -> z.trim())
@@ -46,10 +45,25 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
         return headerParameters;
     }
 
+    public <T, V> T getValueField(V object, String nameField, Class<T> clazz) {
+        Field pathField = null;
+        T value = null;
+        try {
+            pathField = object.getClass().getDeclaredField(nameField);
+            pathField.setAccessible(true);
+            value = (T) pathField.get(object);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
+
     @Override
     public List<FormParameter> getXWWWFormUrlEncoded(HttpHeaders headers, byte[] bytes) {
         List<FormParameter> list = new ArrayList<>();
-        if(headers.getContentType().getSubtype().equalsIgnoreCase("x-www-form-urlencoded")){
+        if (headers.getContentType().getSubtype().equalsIgnoreCase("x-www-form-urlencoded")) {
             getFormParams(bytes).forEach((n, v) -> list.add(new FormParameter().name(n).example(v)));
         }
         return list;
@@ -58,8 +72,8 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
     @Override
     public List<FormParameter> getMultiPartParams(HttpHeaders headers, byte[] bytes) {
         List<FormParameter> list = new ArrayList<>();
-        if(headers.getContentType().getType().equalsIgnoreCase("multipart")){
-            getMultiPartParamsNames(bytes).forEach(n-> list.add(new FormParameter().name(n)));
+        if (headers.getContentType().getType().equalsIgnoreCase("multipart")) {
+            getMultiPartParamsNames(bytes).forEach(n -> list.add(new FormParameter().name(n)));
         }
         return list;
     }
@@ -68,6 +82,30 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
     public Map<String, String> getPathParams(HttpHeaders headers) {
         return headers.entrySet().stream().filter(x -> x.getKey().startsWith("{") && x.getKey().endsWith("}"))
                 .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().get(0)));
+    }
+
+    @Override
+    public URL setUrlPath(URL url, String path) {
+        try {
+            Field pathField = url.getClass().getDeclaredField("path");
+            pathField.setAccessible(true);
+            pathField.set(url, path);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    @Override
+    public URL setUrlPath(URL url, String path, String nameField) {
+        try {
+            Field pathField = url.getClass().getDeclaredField(nameField);
+            pathField.setAccessible(true);
+            pathField.set(url, path);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 
     @Override
@@ -85,19 +123,35 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
         return uri;
     }
 
+
+    public <T, V> T setValueObjectField(T object, V value, String nameField) {
+        try {
+            Field pathField = object.getClass().getDeclaredField(nameField);
+            pathField.setAccessible(true);
+            pathField.get(object);
+            pathField.set(object, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
     @Override
     public String changePathParam(String path, HttpHeaders headers) {
         Map<String, String> parameters = getPathParams(headers);
         StringBuilder stringBuilder = new StringBuilder();
-        String[] splitPath = path.replaceFirst("/", "").trim().split("/");
+        String[] splitPath = URIUtil.decodePath(path).replaceFirst("/", "").trim().split("/");
 
         for (String value : splitPath) {
             if (Objects.nonNull(parameters.get(value))) {
                 stringBuilder.append("/" + parameters.get(value));
-            } else {
+            } else if (!(value.equals("https:"))&&!(value.equals("http:"))) {
                 stringBuilder.append("/" + value);
+            } else {
+                stringBuilder.append(value + "/");
             }
         }
+
         return stringBuilder.toString();
     }
 

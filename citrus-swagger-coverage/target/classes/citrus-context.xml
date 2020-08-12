@@ -15,8 +15,7 @@
         <!--        <citrus:variable name="Var" value=" Hello world"/>-->
     </citrus:global-variables>
     <citrus-http:client id="httpClient"
-                        request-url="http://localhost:8080/petstore/v2/"
-                        content-type="application/json"
+                        request-url="https://petstore.swagger.io/v2/"
                         interceptors="interceptor"/>
 
     <bean id="interceptor" class="ru.lanit.interceptor.CitrusHttpInterceptor"></bean>

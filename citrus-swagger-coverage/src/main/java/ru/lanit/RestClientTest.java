@@ -4,7 +4,8 @@ import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
 import com.consol.citrus.dsl.runner.TestRunner;
 import com.consol.citrus.dsl.testng.TestNGCitrusTest;
-import com.consol.citrus.http.message.HttpMessage;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -14,12 +15,9 @@ import org.testng.annotations.Test;
 import ru.lanit.annotations.RequestInterceptor;
 import ru.lanit.utils.InterceptorHandler;
 
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RestClientTest extends TestNGCitrusTest {
@@ -65,26 +63,31 @@ public class RestClientTest extends TestNGCitrusTest {
     @CitrusTest(name = "test3")
     public void petStorePathParamTest(@Optional @CitrusResource TestRunner testRunner) throws IOException, ScriptException {
         Map<String, Object> pathParams = new HashMap<>();
-        List<String> list = new ArrayList<>();
-        Map<String, Object> header = new HashMap<>();
-        ScriptEngineManager manager = new ScriptEngineManager();
+
         MultiValueMap<String, Object> multiPartParams = new LinkedMultiValueMap<>();
-        multiPartParams.add("{petId}", "hello world");
-        multiPartParams.add("petId", "hello world");
 
         pathParams.put("{petId}", "3");
 
-        HttpMessage httpMessage = new HttpMessage();
-        httpMessage.getContextPath();
+        Resource file = new ClassPathResource("data/jpg.png");
+        multiPartParams.add("file", file);
         testRunner.http(action -> {
             action.client("httpClient")
                     .send()
-                    .get(InterceptorHandler.getPath("/pet/{petId}"))
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .headers(pathParams)
+                    .post(InterceptorHandler.getPath("/pet/1/uploadImage"))
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .payload(multiPartParams)
                     .build();
         });
     }
+//        testRunner.http(action -> {
+//            action.client("httpClient")
+//                    .send()
+//                    .get(InterceptorHandler.getPath("/pet/{petId}"))
+//                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                    .headers(pathParams)
+//                    .build();
+//        });
+    //   }
 
     //        testRunner.http(action -> {
 //        action.client("httpClient")

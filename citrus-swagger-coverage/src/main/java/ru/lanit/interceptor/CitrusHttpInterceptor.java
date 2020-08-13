@@ -37,13 +37,12 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
         HttpHeaders headers = httpRequest.getHeaders();
         InterceptorHandler interceptorHandler = new InterceptorHandler();
         Map<String, String> pathParams = new HashMap<>();
-        String changedPath = null;
         Operation operation = new Operation();
         if (Objects.nonNull(interceptorHandler.getPathParams(headers))) {
             String decodeFullPath = interceptorHandler.changePathParam(interceptorHandler.getValueField(uri, "string", String.class),
                     httpRequest.getHeaders());
             pathParams = interceptorHandler.getPathParams(headers);
-            changedPath = interceptorHandler.changePathParam(uri.getPath(), httpRequest.getHeaders());
+            String changedPath = interceptorHandler.changePathParam(uri.getPath(), httpRequest.getHeaders());
             interceptorHandler.setUriPath(uri, changedPath);
             interceptorHandler.setValueObjectField(uri, changedPath, "decodedPath");
             interceptorHandler.setValueObjectField(uri, changedPath, "path");

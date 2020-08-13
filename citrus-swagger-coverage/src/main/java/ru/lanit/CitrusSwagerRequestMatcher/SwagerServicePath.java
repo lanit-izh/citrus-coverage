@@ -8,9 +8,6 @@ import v2.io.swagger.parser.SwaggerParser;
 import java.util.*;
 
 public class SwagerServicePath {
-    static {
-        //  readSwagerInfo("swagger/petstore-api.json");
-    }
 
     private static List<SwagerServicePath> swagerServicePaths;
     private static final String parametrRegEx = "\\{[\\w\\d]+?\\}";
@@ -29,7 +26,6 @@ public class SwagerServicePath {
         }
         swagerServicePaths.sort(Comparator.comparingInt(o -> o.pathParamsCount));
     }
-
 
     public static PathUse matchPath(HttpRequest request) {
         Optional<SwagerServicePath> optionalSwagerServicePath = swagerServicePaths.stream()

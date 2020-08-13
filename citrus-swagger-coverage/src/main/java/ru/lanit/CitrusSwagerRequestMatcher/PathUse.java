@@ -15,5 +15,4 @@ public class PathUse {
     void addParam(String paramName, String value){
         params.put(paramName, value);
     }
-
 }

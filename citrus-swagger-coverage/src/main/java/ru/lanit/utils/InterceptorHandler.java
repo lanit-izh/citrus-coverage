@@ -46,10 +46,10 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
     }
 
     public <T, V> T getValueField(V object, String nameField, Class<T> clazz) {
-        Field pathField = null;
+
         T value = null;
         try {
-            pathField = object.getClass().getDeclaredField(nameField);
+            Field pathField = object.getClass().getDeclaredField(nameField);
             pathField.setAccessible(true);
             value = (T) pathField.get(object);
         } catch (NoSuchFieldException e) {
@@ -123,12 +123,10 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
         return uri;
     }
 
-
     public <T, V> T setValueObjectField(T object, V value, String nameField) {
         try {
             Field pathField = object.getClass().getDeclaredField(nameField);
             pathField.setAccessible(true);
-            pathField.get(object);
             pathField.set(object, value);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
@@ -143,15 +141,15 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
         String[] splitPath = URIUtil.decodePath(path).replaceFirst("/", "").trim().split("/");
 
         for (String value : splitPath) {
-            if (Objects.nonNull(parameters.get(value))) {
+            if (Strings.isNotNullAndNotEmpty(parameters.get(value))) {
                 stringBuilder.append("/" + parameters.get(value));
-            } else if (!(value.equals("https:"))&&!(value.equals("http:"))) {
+
+            } else if (!(value.equals("https:")) && !(value.equals("http:"))) {
                 stringBuilder.append("/" + value);
             } else {
                 stringBuilder.append(value + "/");
             }
         }
-
         return stringBuilder.toString();
     }
 
@@ -174,7 +172,6 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
                         buf.length > 1 ? URLDecoder.decode(buf[1], "UTF-8") : "");
             }
         }
-
         return res;
     }
 
@@ -206,7 +203,11 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
         return res;
     }
 
-    public Map<String, List<String>> processingHeaders(HttpHeaders headers) {
-        return null;
+    public void removePathParams(HttpHeaders headers, Map<String, String> pathParams) {
+        pathParams.entrySet().stream().forEach(x -> {
+            if (Objects.nonNull(headers.get(x.getKey()))) {
+                headers.remove(x.getKey());
+            }
+        });
     }
 }

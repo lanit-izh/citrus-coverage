@@ -1,9 +1,0 @@
-<aspectj>
-    <aspects>
-        <aspect name="ru.lanit.aspects.RespectAspect"></aspect>
-    </aspects>
-    <weaver options="-Xset:weaveJavaxPackages=true">
-        <include within="ru.lanit.*" />
-        <include within="ru.lanit.*.*" />
-    </weaver>
-</aspectj>

@@ -8,6 +8,5 @@ ru\lanit\annotations\RequestInterceptor.class
 ru\lanit\CitrusSwagerRequestMatcher\PathUse.class
 ru\lanit\CitrusSwagerRequestMatcher\SwagerServicePath.class
 ru\lanit\utils\FileSystemOutputWriter.class
-HelpMojo.class
 ru\lanit\config\EndpointConfig.class
 ru\lanit\interceptor\CitrusHttpInterceptor.class

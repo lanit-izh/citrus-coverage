@@ -64,7 +64,7 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
 
         operation.addResponse(String.valueOf(clientHttpResponse.getStatusCode().value()), new Response());
 
-        if (Objects.nonNull(interceptorHandler.checkResponseObject(clientHttpResponse.getBody()))) {
+        if (interceptorHandler.checkResponseObject(clientHttpResponse.getBody())) {
             operation.addParameter(new BodyParameter().name("body"));
         }
 

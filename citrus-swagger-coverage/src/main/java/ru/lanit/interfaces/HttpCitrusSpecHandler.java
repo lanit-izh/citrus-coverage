@@ -19,7 +19,6 @@ public interface HttpCitrusSpecHandler {
 
     URI setUriPath(URI uri, String path);
 
-
     String changePathParam(String path, HttpHeaders headers);
 
     List<HeaderParameter> getHeadersParam(HttpHeaders headers);
@@ -33,5 +32,4 @@ public interface HttpCitrusSpecHandler {
     Map<String, String> getFormParams(byte[] body);
 
     <T, V> T setValueObjectField(T object, V value, String nameField);
-
 }

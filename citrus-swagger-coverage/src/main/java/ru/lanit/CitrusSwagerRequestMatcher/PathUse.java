@@ -12,7 +12,7 @@ public class PathUse {
         params = new HashMap<>();
     }
 
-    void addParam(String paramName, String value){
+    void addParam(String paramName, String value) {
         params.put(paramName, value);
     }
 }

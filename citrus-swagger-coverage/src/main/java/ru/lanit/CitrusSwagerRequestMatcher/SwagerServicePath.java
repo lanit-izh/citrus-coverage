@@ -9,9 +9,18 @@ import java.util.*;
 
 public class SwagerServicePath {
 
-    private static List<SwagerServicePath> swagerServicePaths;
     private static final String parametrRegEx = "\\{[\\w\\d]+?\\}";
-
+    private static List<SwagerServicePath> swagerServicePaths;
+    public final int pathParamsCount;
+    protected String path;
+    protected String basePath;
+    protected boolean parametrizeblePath;
+    private SwagerServicePath(String path, String basePath) {
+        this.path = path;
+        this.basePath = basePath;
+        parametrizeblePath = isPathParametrizeble(path);
+        pathParamsCount = path.length() - path.replaceAll("\\{", "").length();
+    }
 
     private static void readSwagerInfo(String path) {
         Swagger swagger = new SwaggerParser().read(path);
@@ -56,22 +65,8 @@ public class SwagerServicePath {
         return res;
     }
 
-    public final int pathParamsCount;
-
-    protected String path;
-    protected String basePath;
-    protected boolean parametrizeblePath;
-
-
     private static boolean isPathParametrizeble(String path) {
         return path.replaceAll(parametrRegEx, "").length() != path.length();
-    }
-
-    private SwagerServicePath(String path, String basePath) {
-        this.path = path;
-        this.basePath = basePath;
-        parametrizeblePath = isPathParametrizeble(path);
-        pathParamsCount = path.length() - path.replaceAll("\\{", "").length();
     }
 
     private boolean isSuitablePath(String pathFromRequest) {
@@ -79,7 +74,8 @@ public class SwagerServicePath {
             try {
                 pathFromRequest = pathFromRequest.split(basePath)[1];
             } catch (ArrayIndexOutOfBoundsException e) {
-                throw new IllegalStateException(String.format("В пути запроса %s не удалось определить базовый путь %s, указанный в swager", pathFromRequest, basePath));
+                throw new IllegalStateException(String.format("В пути запроса %s не удалось определить базовый путь %s," +
+                        " указанный в swager", pathFromRequest, basePath));
             }
         }
         String[] requestPathElements = pathFromRequest.split("/");

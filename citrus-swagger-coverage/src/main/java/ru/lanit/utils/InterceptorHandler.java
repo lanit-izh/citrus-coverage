@@ -1,5 +1,6 @@
 package ru.lanit.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jetty.util.URIUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,7 +10,7 @@ import ru.lanit.interfaces.SplitQueryParams;
 import v2.io.swagger.models.parameters.FormParameter;
 import v2.io.swagger.models.parameters.HeaderParameter;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URL;
@@ -58,6 +59,17 @@ public class InterceptorHandler implements HttpCitrusSpecHandler, SplitQueryPara
             e.printStackTrace();
         }
         return value;
+    }
+
+    public boolean checkResponseObject(InputStream inputStream) {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.readTree(bufferedReader.lines().collect(Collectors.joining("\n")));
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     @Override

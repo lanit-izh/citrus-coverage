@@ -16,15 +16,12 @@ import v2.io.swagger.models.parameters.BodyParameter;
 import v2.io.swagger.models.parameters.PathParameter;
 import v2.io.swagger.models.parameters.QueryParameter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static v2.io.swagger.models.Scheme.forValue;
 
@@ -67,10 +64,7 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
 
         operation.addResponse(String.valueOf(clientHttpResponse.getStatusCode().value()), new Response());
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(clientHttpResponse.getBody()));
-        String result = br.lines().collect(Collectors.joining("\n"));
-
-        if (Objects.nonNull(clientHttpResponse.getBody())) {
+        if (Objects.nonNull(interceptorHandler.checkResponseObject(clientHttpResponse.getBody()))) {
             operation.addParameter(new BodyParameter().name("body"));
         }
 

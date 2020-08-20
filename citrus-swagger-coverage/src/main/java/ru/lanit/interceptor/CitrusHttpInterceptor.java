@@ -78,7 +78,7 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
 
         CoverageOutputWriter writer = new FileSystemOutputWriter(Paths.get("swagger-coverage-output"));
         writer.write(swagger);
-        return clientHttpRequestExecution.execute(httpRequest, bytes);
+        return clientHttpResponse;
     }
 }
 

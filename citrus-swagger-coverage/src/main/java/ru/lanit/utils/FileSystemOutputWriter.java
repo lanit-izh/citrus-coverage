@@ -32,11 +32,7 @@ public class FileSystemOutputWriter implements CoverageOutputWriter {
 
     @Override
     public void write(Swagger swagger) {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         final String swaggerResultName = UUID.randomUUID().toString() + "-coverage.json";
         createDirectories(outputDirectory);
         Path file = outputDirectory.resolve(swaggerResultName);

@@ -1,6 +1,6 @@
 Citrus-Swagger-Coverage
 =======================
-Адаптация библеотеки `Swagger-Coverage 1.3.1` под Citrus Framework  
+Адаптация библиотеки `Swagger-Coverage 1.3.1` под Citrus Framework  
 Ссылка на оригинальный проект https://github.com/viclovsky/swagger-coverage  
 
 Как добавить в проект

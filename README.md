@@ -26,6 +26,13 @@ Citrus-Swagger-Coverage
 ```
 Далее в `citrus-context.xml` добавить бин перехватчика
 ```xml
+<beans>
+    <citrus-http:client id="httpClient"
+                        request-url="https://petstore.swagger.io"
+                        interceptors="interceptor"/>
+
+    <bean id="interceptor" class="ru.lanit.interceptor.CitrusHttpInterceptor"></bean> 
+</beans>
 ```
 Вместо добавления фильтра, как это реализовано для Rest-Assured:  
 `RestAssured.given().filter(new SwaggerCoverageRestAssured())`  

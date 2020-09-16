@@ -1,11 +1,11 @@
 Citrus-Swagger-Coverage
 =======================
-Адаптация библиотеки `Swagger-Coverage 1.3.1` под Citrus Framework  
-Ссылка на оригинальный проект https://github.com/viclovsky/swagger-coverage  
+РђРґР°РїС‚Р°С†РёСЏ Р±РёР±Р»РёРѕС‚РµРєРё `Swagger-Coverage 1.3.1` РїРѕРґ Citrus Framework  
+РЎСЃС‹Р»РєР° РЅР° РѕСЂРёРіРёРЅР°Р»СЊРЅС‹Р№ РїСЂРѕРµРєС‚ https://github.com/viclovsky/swagger-coverage  
 
-Как добавить в проект
+РљР°Рє РґРѕР±Р°РІРёС‚СЊ РІ РїСЂРѕРµРєС‚
 --------------------
-Вместо зависимости `swagger-coverage-rest-assured` необходимо указать зависимость:  
+Р’РјРµСЃС‚Рѕ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё `swagger-coverage-rest-assured` РЅРµРѕР±С…РѕРґРёРјРѕ СѓРєР°Р·Р°С‚СЊ Р·Р°РІРёСЃРёРјРѕСЃС‚СЊ:  
 ```xml
         <dependency>
             <groupId>ru.lanit</groupId>
@@ -13,7 +13,7 @@ Citrus-Swagger-Coverage
             <version>1.0.4</version>
         </dependency>
 ```
-И так же указать репозиторий:
+Р С‚Р°Рє Р¶Рµ СѓРєР°Р·Р°С‚СЊ СЂРµРїРѕР·РёС‚РѕСЂРёР№:
 ```xml
         <repository>
             <id>citrus-coverage-mvn-repo</id>
@@ -24,13 +24,21 @@ Citrus-Swagger-Coverage
             </snapshots>
         </repository>
 ```
-Далее в `citrus-context.xml` добавить бин перехватчика
+Р”Р°Р»РµРµ РІ `citrus-context.xml` РґРѕР±Р°РІРёС‚СЊ Р±РёРЅ РїРµСЂРµС…РІР°С‚С‡РёРєР°
 ```xml
+<beans>
+    <citrus-http:client id="httpClient"
+                        request-url="https://petstore.swagger.io/v2/"
+                        interceptors="interceptor"/>
+
+    <bean id="interceptor" class="ru.lanit.interceptor.CitrusHttpInterceptor"></bean>
+
+</beans>
 ```
-Вместо добавления фильтра, как это реализовано для Rest-Assured:  
+Р’РјРµСЃС‚Рѕ РґРѕР±Р°РІР»РµРЅРёСЏ С„РёР»СЊС‚СЂР°, РєР°Рє СЌС‚Рѕ СЂРµР°Р»РёР·РѕРІР°РЅРѕ РґР»СЏ Rest-Assured:  
 `RestAssured.given().filter(new SwaggerCoverageRestAssured())`  
  
-Необходимо добавить кодировщик:  
+РќРµРѕР±С…РѕРґРёРјРѕ РґРѕР±Р°РІРёС‚СЊ РєРѕРґРёСЂРѕРІС‰РёРє:  
 `.get(InterceptorHandler.getPath(/api/user))`  
  
-Далее следуйте следуйте оригинальной иструкции.
+Р”Р°Р»РµРµ СЃР»РµРґСѓР№С‚Рµ СЃР»РµРґСѓР№С‚Рµ РѕСЂРёРіРёРЅР°Р»СЊРЅРѕР№ РёСЃС‚СЂСѓРєС†РёРё.

@@ -27,6 +27,15 @@ import static v2.io.swagger.models.Scheme.forValue;
 
 public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
 
+    private Object paramToRemovePathElementsFromStartOfPath;
+
+    public CitrusHttpInterceptor() {
+    }
+
+    public CitrusHttpInterceptor(Object paramToRemovePathElementsFromStartOfPath) {
+        this.paramToRemovePathElementsFromStartOfPath = paramToRemovePathElementsFromStartOfPath;
+    }
+
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes,
                                         ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
@@ -73,12 +82,56 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
                 .host(uri.getHost())
                 .consumes(String.valueOf(httpRequest.getHeaders().getContentType()))
                 .produces(String.valueOf(clientHttpResponse.getHeaders().getContentType()))
-                .path(InterceptorHandler.userPath, new Path().set(httpRequest.getMethod().name()
+                .path(getSwaggerPath(InterceptorHandler.userPath), new Path().set(httpRequest.getMethod().name()
                         .toLowerCase(), operation));
 
         CoverageOutputWriter writer = new FileSystemOutputWriter(Paths.get("swagger-coverage-output"));
         writer.write(swagger);
         return clientHttpResponse;
+    }
+
+    /**
+     * Метод для получения корректного path для маппинга с swagger спецификацией
+     * @param userPath - path сервиса, по которому отправляется запрос
+     * @return возвращает скорректированный path для маппинга с swagger спецификацией
+     */
+    private String getSwaggerPath(String userPath) {
+
+        StringBuilder pathToRemove = new StringBuilder();
+
+        if (paramToRemovePathElementsFromStartOfPath != null) {
+            boolean isStartWithSlash = userPath.startsWith("/");
+
+            String[] pathParts = isStartWithSlash
+                    ? userPath.replaceFirst("/", "").split("/")
+                    : userPath.split("/");
+
+            if (paramToRemovePathElementsFromStartOfPath instanceof String) {
+                int elementIndexForRemoveElementsBefore = -1;
+                for (int i = 0; i < pathParts.length; i++) {
+                    if (pathParts[i].equals(paramToRemovePathElementsFromStartOfPath)) {
+                        elementIndexForRemoveElementsBefore = i;
+                    }
+                }
+                if (elementIndexForRemoveElementsBefore != -1) {
+                    for (int i = 0; i < elementIndexForRemoveElementsBefore; i++) {
+                        pathToRemove.append("/").append(pathParts[i]);
+                    }
+                }
+            }
+
+            if (paramToRemovePathElementsFromStartOfPath instanceof Integer) {
+                for (int i = 0; i < (Integer) paramToRemovePathElementsFromStartOfPath; i++) {
+                    pathToRemove.append("/").append(pathParts[i]);
+                }
+            }
+
+            return isStartWithSlash
+                    ? userPath.replaceFirst(pathToRemove.toString(), "")
+                    : ("/" + userPath).replaceFirst(pathToRemove.toString(), "");
+        } else {
+            return userPath;
+        }
     }
 }
 

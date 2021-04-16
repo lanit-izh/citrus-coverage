@@ -3,65 +3,105 @@ package ru.lanit.utils;
 import v2.io.swagger.models.Swagger;
 import v2.io.swagger.parser.SwaggerParser;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class SwaggerDocumentHandler {
 
+    private static SwaggerParser swaggerParser;
+    private static List<String> distinctComparesValues;
+
+    public static void setSwaggerParser(SwaggerParser swaggerParser) {
+        SwaggerDocumentHandler.swaggerParser = swaggerParser;
+    }
+
+    public static void setDistinctComparesValues(List<String> distinctComparesValues) {
+        SwaggerDocumentHandler.distinctComparesValues = distinctComparesValues;
+    }
+
+    private static SwaggerParser getSwaggerInstance() {
+        if (swaggerParser == null) {
+            setSwaggerParser(new SwaggerParser());
+            return swaggerParser;
+        }
+        return swaggerParser;
+    }
+
     public static List<String> getSwaggerPartsOfPathToCompare(String swaggerLocale, int countPartsOfPathToCompare) {
 
-        Swagger swagger = new SwaggerParser().read(swaggerLocale);
-        List<String> paths = new ArrayList<String>(swagger.getPaths().keySet())
-                .stream()
-                .map(x -> x.replaceFirst("/", ""))
-                .collect(Collectors.toList());
-        List<String> comparesValues = new ArrayList<>();
+        if (distinctComparesValues == null) {
+            Swagger swagger = getSwaggerInstance().read(swaggerLocale);
 
-        for (int i = 0; i < paths.size(); i++) {
-            StringBuilder comparesValue = new StringBuilder();
-            if (countPartsOfPathToCompare == 1) {
-                comparesValue.append(paths.get(i).split("/")[0]);
-                comparesValues.add(comparesValue.toString());
-                continue;
+            if (countPartsOfPathToCompare <= 0) {
+                return null;
             }
-            String[] partsOfPath = paths.get(i).split("/");
-            if (partsOfPath.length <= countPartsOfPathToCompare) {
-                for (int j = 0; j < partsOfPath.length; j++) {
-                    comparesValue.append(partsOfPath[j]).append("/");
+
+            List<String> paths = new ArrayList<>(swagger.getPaths().keySet())
+                    .stream()
+                    .map(x -> x.replaceFirst("/", ""))
+                    .collect(Collectors.toList());
+            List<String> comparesValues = new ArrayList<>();
+
+            for (String path : paths) {
+                StringBuilder comparesValue = new StringBuilder();
+                String[] partsOfPath = path.split("/");
+
+                if (partsOfPath.length <= countPartsOfPathToCompare) {
+                    for (String s : partsOfPath) {
+                        comparesValue.append(s).append("/");
+                    }
+                } else {
+                    for (int k = 0; k < countPartsOfPathToCompare; k++) {
+                        comparesValue.append(partsOfPath[k]).append("/");
+                    }
                 }
                 if (comparesValue.toString().endsWith("/")) {
                     comparesValue.deleteCharAt(comparesValue.lastIndexOf("/"));
                 }
-                comparesValues.add(comparesValue.toString().split("\\{")[0]);
-            } else {
-                for (int k = 0; k < countPartsOfPathToCompare; k++) {
-                    comparesValue.append(partsOfPath[k]).append("/");
-                }
-                comparesValues.add(comparesValue.toString().split("\\{")[0]);
+                comparesValues.add(("/" + comparesValue.toString()).split("\\/\\{")[0]);
             }
-        }
 
-        ArrayList<String> distinctComparesValues = new ArrayList<>(new HashSet<>(comparesValues));
-        Collections.sort(distinctComparesValues, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return o2.split("/").length - o1.split("/").length;
-            }
-        });
+            distinctComparesValues = new ArrayList<>(new HashSet<>(comparesValues));
+            distinctComparesValues.sort(new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return o2.split("/").length - o1.split("/").length;
+                }
+            });
+            setDistinctComparesValues(distinctComparesValues);
+        }
         return distinctComparesValues;
     }
 
 
     public static String getSwaggerPath(String userPath, List<String> swaggerPartsOfPathToCompare) {
 
-        for (int i = 0; i < swaggerPartsOfPathToCompare.size(); i++) {
-            if (userPath.contains(swaggerPartsOfPathToCompare.get(i))) {
-                String[] parts = userPath.split(swaggerPartsOfPathToCompare.get(i));
+        String tempUserPath = userPath.split("(\\?|%3F)")[0];
+        String pathWithoutQueryParams = tempUserPath.endsWith("/")
+                ? tempUserPath.substring(0, tempUserPath.length() - 1)
+                : tempUserPath;
+
+        if (swaggerPartsOfPathToCompare == null) {
+            return pathWithoutQueryParams;
+        }
+
+        for (String s : swaggerPartsOfPathToCompare) {
+            if (pathWithoutQueryParams.contains(s)) {
+                String pathBeginWithSlash = pathWithoutQueryParams.startsWith("/")
+                        ? pathWithoutQueryParams
+                        : "/" + pathWithoutQueryParams;
+
+                String[] parts = pathBeginWithSlash.split(s);
                 return parts.length < 2
-                        ? "/" + swaggerPartsOfPathToCompare.get(i)
-                        : "/" + swaggerPartsOfPathToCompare.get(i) + parts[parts.length - 1];
+                        ? s
+                        : parts[0].equals("")
+                        ? parts[1]
+                        : s + parts[parts.length - 1];
             }
         }
-        return userPath;
+        return pathWithoutQueryParams;
     }
 }

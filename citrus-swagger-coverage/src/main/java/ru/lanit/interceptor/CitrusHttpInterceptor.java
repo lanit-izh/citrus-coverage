@@ -30,9 +30,15 @@ import static v2.io.swagger.models.Scheme.forValue;
 public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
 
     private boolean parseSwagger = false;
+    private boolean createSwaggerFile = true;
+
     private String swaggerFileLocale;
 
     public CitrusHttpInterceptor() {
+    }
+
+    public CitrusHttpInterceptor(boolean createSwaggerFile) {
+        this.createSwaggerFile = createSwaggerFile;
     }
 
     public CitrusHttpInterceptor(boolean parseSwagger, String swaggerFileLocale) {
@@ -87,16 +93,18 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
             swaggerPath = SwaggerDocumentHandler.getSwaggerPath(InterceptorHandler.userPath, swaggerPartsOfPathToCompare);
         }
 
-        Swagger swagger = new Swagger()
-                .scheme(forValue(uri.getScheme()))
-                .host(uri.getHost())
-                .consumes(String.valueOf(httpRequest.getHeaders().getContentType()))
-                .produces(String.valueOf(clientHttpResponse.getHeaders().getContentType()))
-                .path(swaggerPath, new Path().set(httpRequest.getMethod().name()
-                        .toLowerCase(), operation));
+        if (createSwaggerFile) {
+            Swagger swagger = new Swagger()
+                    .scheme(forValue(uri.getScheme()))
+                    .host(uri.getHost())
+                    .consumes(String.valueOf(httpRequest.getHeaders().getContentType()))
+                    .produces(String.valueOf(clientHttpResponse.getHeaders().getContentType()))
+                    .path(swaggerPath, new Path().set(httpRequest.getMethod().name()
+                            .toLowerCase(), operation));
 
-        CoverageOutputWriter writer = new FileSystemOutputWriter(Paths.get("swagger-coverage-output"));
-        writer.write(swagger);
+            CoverageOutputWriter writer = new FileSystemOutputWriter(Paths.get("swagger-coverage-output"));
+            writer.write(swagger);
+        }
         return clientHttpResponse;
     }
 

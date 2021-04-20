@@ -107,6 +107,5 @@ public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
         }
         return clientHttpResponse;
     }
-
 }
 

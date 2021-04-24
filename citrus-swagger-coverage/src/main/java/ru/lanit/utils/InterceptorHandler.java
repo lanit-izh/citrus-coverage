@@ -1,14 +1,14 @@
 package ru.lanit.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.models.parameters.FormParameter;
+import io.swagger.models.parameters.HeaderParameter;
 import org.eclipse.jetty.util.URIUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.testng.util.Strings;
 import ru.lanit.interfaces.HttpCitrusSpecHandler;
 import ru.lanit.interfaces.SplitQueryParams;
-import v2.io.swagger.models.parameters.FormParameter;
-import v2.io.swagger.models.parameters.HeaderParameter;
 
 import java.io.*;
 import java.lang.reflect.Field;

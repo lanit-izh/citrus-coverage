@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>citrus-swagger-coverage</groupId>
+    <groupId>citrus.swagger.coverage</groupId>
     <artifactId>citrus-swagger-coverage</artifactId>
     <version>1.1.0</version>
 
@@ -14,27 +14,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <testng.version>6.14.3</testng.version>
-        <citrus.version>3.0.0-M1</citrus.version>
+        <citrus.version>2.8.0</citrus.version>
         <maven.version>3.5.2</maven.version>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
-        </repository>
-    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>com.consol.citrus</groupId>
-            <artifactId>citrus-testng</artifactId>
+            <artifactId>citrus-core</artifactId>
             <version>${citrus.version}</version>
         </dependency>
         <dependency>
             <groupId>com.consol.citrus</groupId>
             <artifactId>citrus-java-dsl</artifactId>
-            <version>2.8.0</version>
+            <version>${citrus.version}</version>
         </dependency>
 
         <dependency>
@@ -82,7 +75,7 @@
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-parser</artifactId>
-            <version>2.0.0-rc1</version>
+            <version>1.0.52</version>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
@@ -96,58 +89,36 @@
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>com.github.viclovsky.swagger.coverage</groupId>
-            <artifactId>swagger-coverage-commandline</artifactId>
-            <version>1.3.5</version>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>1.6.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.14.3</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>${github.maven-plugin}</version>
-                <configuration>
-                    <message>Maven artifacts for ${project.version}</message>
-                    <noJekyll>true</noJekyll>
-                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-                    <branch>refs/heads/mvn-repo</branch>
-                    <includes><include>**/*</include></includes>
-                    <repositoryName>citrus-coverage</repositoryName>
-                    <repositoryOwner>lanit-izh</repositoryOwner>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
-                        <phase>deploy</phase>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
 
-    <repositories>
+    <distributionManagement>
         <repository>
-            <id>viclovsky</id>
-            <url>https://dl.bintray.com/viclovsky/maven/</url>
+            <!--                        <id>3rd_patry</id>-->
+            <!--                        <url>http://ciapp201lv.corp.dev.vtb:30533/repository/3rd_patry/</url>-->
+            <id>dso.ru.vtb.at</id>
+            <url>http://10.203.225.247:30081/repository/ru.vtb.at/</url>
         </repository>
-    </repositories>
+    </distributionManagement>
 </project>

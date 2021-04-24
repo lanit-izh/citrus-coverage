@@ -1,9 +1,9 @@
 package ru.lanit.CitrusSwagerRequestMatcher;
 
+import io.swagger.models.Path;
+import io.swagger.models.Swagger;
+import io.swagger.parser.SwaggerParser;
 import org.springframework.http.HttpRequest;
-import v2.io.swagger.models.Path;
-import v2.io.swagger.models.Swagger;
-import v2.io.swagger.parser.SwaggerParser;
 
 import java.util.*;
 

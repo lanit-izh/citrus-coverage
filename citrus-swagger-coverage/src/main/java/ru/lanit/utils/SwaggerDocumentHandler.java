@@ -1,7 +1,9 @@
 package ru.lanit.utils;
 
-import v2.io.swagger.models.Swagger;
-import v2.io.swagger.parser.SwaggerParser;
+//import v2.io.swagger.models.Swagger;
+//import v2.io.swagger.parser.SwaggerParser;
+import io.swagger.models.Swagger;
+import io.swagger.parser.SwaggerParser;
 
 import java.util.ArrayList;
 import java.util.Comparator;

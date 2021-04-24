@@ -1,8 +1,8 @@
 package ru.lanit.interfaces;
 
+import io.swagger.models.parameters.FormParameter;
+import io.swagger.models.parameters.HeaderParameter;
 import org.springframework.http.HttpHeaders;
-import v2.io.swagger.models.parameters.FormParameter;
-import v2.io.swagger.models.parameters.HeaderParameter;
 
 import java.net.URI;
 import java.net.URL;

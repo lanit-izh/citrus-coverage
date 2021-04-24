@@ -1,5 +1,12 @@
 package ru.lanit.interceptor;
 
+import io.swagger.models.Operation;
+import io.swagger.models.Path;
+import io.swagger.models.Response;
+import io.swagger.models.Swagger;
+import io.swagger.models.parameters.BodyParameter;
+import io.swagger.models.parameters.PathParameter;
+import io.swagger.models.parameters.QueryParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -9,13 +16,6 @@ import ru.lanit.interfaces.CoverageOutputWriter;
 import ru.lanit.utils.FileSystemOutputWriter;
 import ru.lanit.utils.InterceptorHandler;
 import ru.lanit.utils.SwaggerDocumentHandler;
-import v2.io.swagger.models.Operation;
-import v2.io.swagger.models.Path;
-import v2.io.swagger.models.Response;
-import v2.io.swagger.models.Swagger;
-import v2.io.swagger.models.parameters.BodyParameter;
-import v2.io.swagger.models.parameters.PathParameter;
-import v2.io.swagger.models.parameters.QueryParameter;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static v2.io.swagger.models.Scheme.forValue;
+import static io.swagger.models.Scheme.forValue;
+//import static v2.io.swagger.models.Scheme.forValue;
 
 public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
 

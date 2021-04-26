@@ -1,4 +1,4 @@
-package ru.lanit.CitrusSwagerRequestMatcher;
+package ru.lanit.CitrusSwaggerRequestMatcher;
 
 import java.util.HashMap;
 import java.util.Map;

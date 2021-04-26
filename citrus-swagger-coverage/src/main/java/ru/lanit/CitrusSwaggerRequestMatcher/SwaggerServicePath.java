@@ -1,4 +1,4 @@
-package ru.lanit.CitrusSwagerRequestMatcher;
+package ru.lanit.CitrusSwaggerRequestMatcher;
 
 import io.swagger.models.Path;
 import io.swagger.models.Swagger;
@@ -7,58 +7,59 @@ import org.springframework.http.HttpRequest;
 
 import java.util.*;
 
-public class SwagerServicePath {
+public class SwaggerServicePath {
 
     private static final String parametrRegEx = "\\{[\\w\\d]+?\\}";
-    private static List<SwagerServicePath> swagerServicePaths;
+    private static List<SwaggerServicePath> swaggerServicePaths;
     public final int pathParamsCount;
     protected String path;
     protected String basePath;
     protected boolean parametrizeblePath;
-    private SwagerServicePath(String path, String basePath) {
+
+    private SwaggerServicePath(String path, String basePath) {
         this.path = path;
         this.basePath = basePath;
         parametrizeblePath = isPathParametrizeble(path);
         pathParamsCount = path.length() - path.replaceAll("\\{", "").length();
     }
 
-    private static void readSwagerInfo(String path) {
+    private static void readSwaggerInfo(String path) {
         Swagger swagger = new SwaggerParser().read(path);
         String basePath = swagger.getBasePath();
-        if (swagerServicePaths == null) {
-            swagerServicePaths = new ArrayList<>(swagger.getPaths().size());
+        if (swaggerServicePaths == null) {
+            swaggerServicePaths = new ArrayList<>(swagger.getPaths().size());
         } else {
-            swagerServicePaths.clear();
+            swaggerServicePaths.clear();
         }
         for (Map.Entry<String, Path> sPath : swagger.getPaths().entrySet()) {
-            swagerServicePaths.add(new SwagerServicePath(sPath.getKey(), basePath));
+            swaggerServicePaths.add(new SwaggerServicePath(sPath.getKey(), basePath));
         }
-        swagerServicePaths.sort(Comparator.comparingInt(o -> o.pathParamsCount));
+        swaggerServicePaths.sort(Comparator.comparingInt(o -> o.pathParamsCount));
     }
 
     public static PathUse matchPath(HttpRequest request) {
-        Optional<SwagerServicePath> optionalSwagerServicePath = swagerServicePaths.stream()
+        Optional<SwaggerServicePath> optionalSwaggerServicePath = swaggerServicePaths.stream()
                 .filter(x -> !x.parametrizeblePath).filter(x -> x.isSuitablePath(request.getURI().getPath())).findAny();
-        if (optionalSwagerServicePath.isPresent()) {
+        if (optionalSwaggerServicePath.isPresent()) {
             System.out.println("Ура, мы нашли нужный путь в сваггере");
         } else {
-            optionalSwagerServicePath = swagerServicePaths.stream().filter(x -> x.parametrizeblePath)
+            optionalSwaggerServicePath = swaggerServicePaths.stream().filter(x -> x.parametrizeblePath)
                     .filter(x -> x.isSuitablePath(request.getURI().getPath())).findAny();
-            if (optionalSwagerServicePath.isPresent()) {
+            if (optionalSwaggerServicePath.isPresent()) {
                 System.out.println("Ура, мы нашли параметризуемый путь в свагере");
             } else {
                 throw new RuntimeException("Крайне информативное исключение");
             }
         }
 
-        SwagerServicePath servicePath = optionalSwagerServicePath.get();
+        SwaggerServicePath servicePath = optionalSwaggerServicePath.get();
         PathUse res = new PathUse(servicePath.path);
         String reqPath = request.getURI().getPath().split(servicePath.basePath)[1];
         String[] requestPathElements = reqPath.split("/");
-        String[] swagerPathElements = servicePath.path.split("/");
-        for (int i = 0; i < swagerPathElements.length; i++) {
-            if (isPathParametrizeble(swagerPathElements[i])) {
-                res.addParam(swagerPathElements[i].substring(1, swagerPathElements[i].length() - 1),
+        String[] swaggerPathElements = servicePath.path.split("/");
+        for (int i = 0; i < swaggerPathElements.length; i++) {
+            if (isPathParametrizeble(swaggerPathElements[i])) {
+                res.addParam(swaggerPathElements[i].substring(1, swaggerPathElements[i].length() - 1),
                         requestPathElements[i]);
             }
         }
@@ -75,17 +76,17 @@ public class SwagerServicePath {
                 pathFromRequest = pathFromRequest.split(basePath)[1];
             } catch (ArrayIndexOutOfBoundsException e) {
                 throw new IllegalStateException(String.format("В пути запроса %s не удалось определить базовый путь %s," +
-                        " указанный в swager", pathFromRequest, basePath));
+                        " указанный в swagger", pathFromRequest, basePath));
             }
         }
         String[] requestPathElements = pathFromRequest.split("/");
-        String[] swagerPathElements = path.split("/");
-        if (requestPathElements.length != swagerPathElements.length)
+        String[] swaggerPathElements = path.split("/");
+        if (requestPathElements.length != swaggerPathElements.length)
             return false;
-        for (int i = 0; i < swagerPathElements.length; i++) {
-            if (isPathParametrizeble(swagerPathElements[i]))
+        for (int i = 0; i < swaggerPathElements.length; i++) {
+            if (isPathParametrizeble(swaggerPathElements[i]))
                 continue;
-            if (!swagerPathElements[i].equals(requestPathElements[i])) {
+            if (!swaggerPathElements[i].equals(requestPathElements[i])) {
                 return false;
             }
         }

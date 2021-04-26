@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static io.swagger.models.Scheme.forValue;
-//import static v2.io.swagger.models.Scheme.forValue;
 
 public class CitrusHttpInterceptor implements ClientHttpRequestInterceptor {
 
